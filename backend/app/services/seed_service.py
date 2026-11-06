@@ -163,10 +163,15 @@ def demo_start(db: Session) -> dict:
 _warm_lock = threading.Lock()
 
 
-def warm_embeddings(batch: int = 256) -> None:
+def warm_embeddings(batch: int = 256, wait: bool = False) -> None:
+    """Encode every CV summary not yet cached, then persist the cache to disk.
+
+    wait=False (background use) returns at once if a warm-up is already running;
+    wait=True blocks until that run has finished and then tops up.
+    """
     from ..database import SessionLocal
 
-    if not _warm_lock.acquire(blocking=False):
+    if not _warm_lock.acquire(blocking=wait):
         return
     try:
         started = time.perf_counter()
@@ -175,6 +180,7 @@ def warm_embeddings(batch: int = 256) -> None:
             texts = list(db.scalars(select(Candidate.resume_summary)))
         for i in range(0, len(texts), batch):
             embedder.encode(texts[i : i + batch])
+        embedder.save()
         log.info("Embedding cache warm: %d texts in %.1fs", len(texts), time.perf_counter() - started)
     except Exception:  # pragma: no cover
         log.exception("Embedding warm-up failed")

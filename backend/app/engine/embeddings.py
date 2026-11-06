@@ -47,13 +47,27 @@ class HashingEmbedder:
 
 
 class Embedder:
-    """Thread-safe, cached text -> vector encoder."""
+    """Thread-safe, cached text -> vector encoder.
+
+    The cache is keyed by the SHA-1 of the text (so no CV text is held twice or
+    written to disk) and persisted to data/embedding_cache.npz, so CV summaries
+    are only ever encoded once, even across restarts.
+    """
 
     def __init__(self) -> None:
         self._model = None
         self._backend_name = "not-loaded"
         self._cache: dict[str, np.ndarray] = {}
         self._lock = threading.Lock()
+        self._dirty = False
+
+    @staticmethod
+    def _key(text: str) -> str:
+        return hashlib.sha1(text.encode("utf-8")).hexdigest()
+
+    @property
+    def _cache_file(self):
+        return settings.data_dir / "embedding_cache.npz"
 
     # -- model loading -----------------------------------------------------
     def _load(self) -> None:
@@ -66,14 +80,41 @@ class Embedder:
         try:
             from sentence_transformers import SentenceTransformer
 
-            if not local.exists():
+            if not (local / "model.safetensors").exists():
                 raise FileNotFoundError(f"{local} not found. Run: python -m app.download_model")
             self._model = SentenceTransformer(str(local), device="cpu")
             self._backend_name = "all-MiniLM-L6-v2"
             log.info("Loaded sentence-transformers model from %s", local)
+            self._load_disk_cache()
         except Exception as exc:  # pragma: no cover - depends on environment
             log.warning("Semantic model unavailable (%s); using hashing fallback", exc)
             self._model, self._backend_name = HashingEmbedder(), HashingEmbedder.name
+
+    def _load_disk_cache(self) -> None:
+        try:
+            if self._cache_file.exists():
+                with np.load(self._cache_file, allow_pickle=False) as z:
+                    if str(z["model"]) != self._backend_name:
+                        return
+                    for k, v in zip(z["keys"], z["vectors"]):
+                        self._cache[str(k)] = v
+                log.info("Loaded %d cached embeddings from disk", len(self._cache))
+        except Exception:  # pragma: no cover - a corrupt cache is simply rebuilt
+            log.warning("Embedding cache unreadable; it will be rebuilt")
+            self._cache.clear()
+
+    def save(self) -> None:
+        """Write the cache to disk if anything new was encoded (real model only)."""
+        with self._lock:
+            if not self._dirty or isinstance(self._model, HashingEmbedder) or not self._cache:
+                return
+            keys = np.array(list(self._cache.keys()))
+            vectors = np.vstack(list(self._cache.values())).astype(np.float32)
+            tmp = self._cache_file.with_suffix(".tmp.npz")
+            np.savez(tmp, keys=keys, vectors=vectors, model=np.array(self._backend_name))
+            tmp.replace(self._cache_file)
+            self._dirty = False
+            log.info("Saved %d embeddings to disk cache", len(keys))
 
     @property
     def backend_name(self) -> str:
@@ -91,23 +132,33 @@ class Embedder:
         """
         with self._lock:
             self._load()
-            missing = list(dict.fromkeys(t for t in texts if t not in self._cache))
+            keys = [self._key(t) for t in texts]
+            missing = {}
+            for k, t in zip(keys, texts):
+                if k not in self._cache and k not in missing:
+                    missing[k] = t
             if missing:
+                todo = list(missing.values())
                 if isinstance(self._model, HashingEmbedder):
-                    vecs = self._model.encode(missing)
+                    vecs = self._model.encode(todo)
                 else:
                     vecs = self._model.encode(
-                        missing,
+                        todo,
                         batch_size=batch_size,
                         convert_to_numpy=True,
                         normalize_embeddings=True,
                         show_progress_bar=False,
                     )
-                for t, v in zip(missing, vecs):
-                    self._cache[t] = np.asarray(v, dtype=np.float32)
+                for k, v in zip(missing.keys(), vecs):
+                    self._cache[k] = np.asarray(v, dtype=np.float32)
+                self._dirty = True
             if not texts:
                 return np.zeros((0, 384), dtype=np.float32)
-            return np.vstack([self._cache[t] for t in texts])
+            return np.vstack([self._cache[k] for k in keys])
+
+    def cached(self, texts: Sequence[str]) -> int:
+        """How many of `texts` are already encoded (for the "preparing" status)."""
+        return sum(1 for t in texts if self._key(t) in self._cache)
 
     def cache_size(self) -> int:
         return len(self._cache)

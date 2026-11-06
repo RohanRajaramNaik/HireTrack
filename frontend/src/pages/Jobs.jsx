@@ -72,7 +72,19 @@ export default function Jobs() {
   const [submitted, setSubmitted] = useState(false)
   const [busy, setBusy] = useState(null) // 'save' | 'run' | null
   const [confirmDelete, setConfirmDelete] = useState(false)
+  const [slowRun, setSlowRun] = useState(false)
   const demo = Boolean(location.state?.demo)
+
+  // A first match on newly loaded candidates reads every CV once (about 10 s
+  // per 1,000 on a laptop CPU). Explain the wait instead of leaving a spinner.
+  useEffect(() => {
+    if (busy !== 'run') {
+      setSlowRun(false)
+      return undefined
+    }
+    const t = setTimeout(() => setSlowRun(true), 1500)
+    return () => clearTimeout(t)
+  }, [busy])
   const demoFired = useRef(false)
 
   const isNew = jobId === 'new' || (!jobId && jobs && jobs.length === 0)
@@ -366,6 +378,11 @@ export default function Jobs() {
             </button>
           </div>
         </form>
+        {slowRun && (
+          <p className="mt-2 text-right text-sm text-muted" role="status">
+            Reading new CVs for the first time. This takes about 10 seconds per 1,000 candidates and only happens once.
+          </p>
+        )}
         {!canRun && total !== 100 && (
           <p className="mt-2 text-right text-sm text-warn">Run Match unlocks when the weights total exactly 100% (now {total}%).</p>
         )}

@@ -65,6 +65,10 @@ def run_match(db: Session, job_id: int) -> ResultsOut:
         raise AppError("There are no candidates to match. Add candidates or load the demo data first.")
     scores = score_candidates(criteria, profiles, embedder.encode)
     duration_ms = int((time.perf_counter() - started) * 1000)
+    try:
+        embedder.save()  # keep newly encoded CVs for next time (no-op if nothing new)
+    except Exception:  # pragma: no cover
+        log.warning("Could not save embedding cache")
 
     run_at = utcnow()
     try:

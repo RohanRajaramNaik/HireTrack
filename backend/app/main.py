@@ -125,6 +125,12 @@ def health() -> dict:
     return {"status": "ok"}
 
 
+@app.api_route("/api/{rest:path}", methods=["GET", "POST", "PUT", "DELETE"], include_in_schema=False)
+def api_not_found(rest: str):
+    """Unknown API paths always get the standard error shape, whatever the method."""
+    return JSONResponse(status_code=404, content={"detail": "Not found", "field": None})
+
+
 # ---------------------------------------------------- built frontend (SPA)
 _dist = settings.frontend_dist
 if (_dist / "index.html").exists():
