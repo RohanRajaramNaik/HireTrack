@@ -1,0 +1,40 @@
+# Secrets and local runtime data
+.env
+data/
+backups/
+logs/
+*.db
+*.db-journal
+*.sqlite3
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Cached sentence-transformers model (downloaded by app.download_model)
+models/
+model_cache/
+
+# Node / frontend
+node_modules/
+frontend/dist/
+frontend/coverage/
+
+# Playwright and screenshot evidence (large, regenerable)
+playwright-report/
+test-results/
+docs/screenshots/
+docs/evidence/
+*.webm
+frontend/e2e/output/
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
