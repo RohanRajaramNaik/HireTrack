@@ -1,0 +1,176 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Palette: off-white + slate neutrals, one deep blue accent.
+   Green is reserved for Run Match, red for destructive actions only. */
+@layer base {
+  :root {
+    --canvas: 248 248 247;
+    --surface: 255 255 255;
+    --subtle: 243 244 246;
+    --line: 226 229 235;
+    --line-strong: 203 209 218;
+    --ink: 15 23 42;
+    --muted: 71 85 105;
+    --faint: 98 112 134;
+    --accent: 29 63 191;
+    --accent-hover: 22 49 158;
+    --accent-soft: 236 241 255;
+    --accent-ink: 24 52 166;
+    --go: 21 122 59;
+    --go-hover: 17 101 49;
+    --go-soft: 236 250 241;
+    --danger: 185 28 28;
+    --danger-hover: 153 27 27;
+    --danger-soft: 254 242 242;
+    --warn: 161 72 8;
+    --warn-soft: 255 247 235;
+    --bar-track: 231 234 239;
+    --bar-fill: 29 63 191;
+    color-scheme: light;
+  }
+
+  [data-theme='dark'] {
+    --canvas: 12 15 22;
+    --surface: 19 24 33;
+    --subtle: 26 32 44;
+    --line: 41 49 64;
+    --line-strong: 62 72 90;
+    --ink: 236 239 244;
+    --muted: 167 177 192;
+    --faint: 134 146 165;
+    --accent: 120 152 255;
+    --accent-hover: 148 174 255;
+    --accent-soft: 28 37 70;
+    --accent-ink: 170 192 255;
+    --go: 22 128 64;
+    --go-hover: 25 145 72;
+    --go-soft: 18 44 30;
+    --danger: 225 80 80;
+    --danger-hover: 240 100 100;
+    --danger-soft: 52 22 24;
+    --warn: 240 170 80;
+    --warn-soft: 50 36 18;
+    --bar-track: 41 49 64;
+    --bar-fill: 120 152 255;
+    color-scheme: dark;
+  }
+
+  html {
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  /* Scale everything up a notch on large projector screens. */
+  @media (min-width: 1700px) {
+    html { font-size: 17.5px; }
+  }
+
+  body {
+    @apply bg-canvas text-ink font-sans text-base;
+    font-feature-settings: 'cv11', 'ss01';
+  }
+
+  :focus-visible {
+    outline: 2px solid rgb(var(--accent));
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  ::selection { background: rgb(var(--accent) / 0.18); }
+
+  input[type='number']::-webkit-inner-spin-button { opacity: 0.6; }
+}
+
+@layer components {
+  .tnum { font-variant-numeric: tabular-nums; font-feature-settings: 'tnum', 'cv11'; }
+
+  .panel { @apply bg-surface border border-line rounded-lg; }
+
+  .label { @apply block text-sm font-medium text-ink mb-1.5; }
+  .hint { @apply text-xs text-faint; }
+
+  .input {
+    @apply w-full h-9 px-3 rounded border border-line-strong bg-surface text-ink text-base
+      placeholder:text-faint transition-colors duration-100
+      hover:border-faint focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/20;
+  }
+  .input[aria-invalid='true'] { @apply border-danger focus:ring-danger/20 focus:border-danger; }
+  textarea.input { @apply h-auto py-2 leading-6 resize-y; }
+  select.input { @apply pr-8 appearance-none bg-no-repeat; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%2364748b' stroke-width='2' viewBox='0 0 24 24'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); background-position: right 0.6rem center; }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 h-9 px-3.5 rounded text-base font-medium
+      whitespace-nowrap select-none transition-colors duration-100
+      disabled:opacity-45 disabled:cursor-not-allowed;
+  }
+  .btn-sm { @apply h-8 px-2.5 text-sm gap-1.5; }
+  .btn-lg { @apply h-11 px-5 text-md; }
+  .btn-primary { @apply btn bg-accent text-white hover:bg-accent-hover; }
+  [data-theme='dark'] .btn-primary { @apply text-canvas; }
+  .btn-go { @apply btn bg-go text-white hover:bg-go-hover; }
+  .btn-danger { @apply btn bg-danger text-white hover:bg-danger-hover; }
+  .btn-secondary { @apply btn bg-surface text-ink border border-line-strong hover:bg-subtle; }
+  .btn-ghost { @apply btn text-muted hover:text-ink hover:bg-subtle; }
+  .btn-danger-ghost { @apply btn text-danger hover:bg-danger-soft; }
+
+  .chip {
+    @apply inline-flex items-center gap-1 h-6 px-2 rounded text-sm border border-line bg-subtle text-ink whitespace-nowrap;
+  }
+  .chip-match { @apply chip border-accent/25 bg-accent-soft text-accent-ink; }
+  .chip-missing { @apply chip border-dashed border-line-strong bg-transparent text-muted; }
+
+  .kbd { @apply inline-flex items-center h-5 px-1.5 rounded border border-line-strong text-2xs text-muted font-medium; }
+
+  .th { @apply text-left text-xs font-medium text-faint uppercase tracking-wide; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Range slider: filled track up to the thumb, crisp thumb, consistent across Chrome, Edge, Firefox. */
+@layer components {
+  .range {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 20px;
+    background: transparent;
+    cursor: pointer;
+  }
+  .range::-webkit-slider-runnable-track {
+    height: 4px;
+    border-radius: 999px;
+    background: linear-gradient(to right, rgb(var(--accent)) var(--pct), rgb(var(--bar-track)) var(--pct));
+  }
+  .range::-moz-range-track { height: 4px; border-radius: 999px; background: rgb(var(--bar-track)); }
+  .range::-moz-range-progress { height: 4px; border-radius: 999px; background: rgb(var(--accent)); }
+  .range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    margin-top: -6px;
+    width: 16px;
+    height: 16px;
+    border-radius: 999px;
+    background: rgb(var(--surface));
+    border: 2px solid rgb(var(--accent));
+    box-shadow: 0 1px 2px rgb(15 23 42 / 0.2);
+    transition: transform 0.1s;
+  }
+  .range::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    border-radius: 999px;
+    background: rgb(var(--surface));
+    border: 2px solid rgb(var(--accent));
+  }
+  .range:active::-webkit-slider-thumb { transform: scale(1.15); }
+  .range:focus-visible { outline: none; }
+  .range:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 4px rgb(var(--accent) / 0.25); }
+  .range:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 4px rgb(var(--accent) / 0.25); }
+}

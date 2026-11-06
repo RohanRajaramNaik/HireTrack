@@ -39,7 +39,7 @@ def list_backups() -> list[dict]:
     for p in _list_paths():
         m = NAME_RE.match(p.name)
         stamp = m.group(1)
-        created = datetime.strptime(stamp[:15], "%Y%m%d-%H%M%S")
+        created = datetime.strptime(stamp[:15], "%Y%m%d-%H%M%S").astimezone()  # local, tz-aware
         out.append(
             {
                 "file": p.name,
