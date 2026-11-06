@@ -295,3 +295,47 @@ class TestAdmin:
         for _ in range(12):
             client.post("/api/admin/backups", headers=admin_headers)
         assert len(client.get("/api/admin/backups", headers=admin_headers).json()) == 10
+
+
+# -------------------------------------------------------------- seeding
+class TestSeed:
+    def test_seed_demo(self, client, admin_headers):
+        make_candidate(client, full_name="Will Be Wiped")
+        r = client.post("/api/admin/seed", headers=admin_headers)
+        assert r.status_code == 200, r.text
+        body = r.json()
+        assert body["candidates"] == 18 and body["jobs"] == 3
+        assert body["safety_backup"].endswith("preseed.db")
+        names = [c["full_name"] for c in client.get("/api/candidates", params={"page_size": 100}).json()["items"]]
+        assert "Will Be Wiped" not in names and "Thandiwe Nkosi" in names
+        titles = {j["job_title"] for j in client.get("/api/jobs").json()}
+        assert titles == {"Cloud Data Engineer", "Full-Stack Developer", "Business Analyst"}
+
+    def test_seeded_demo_story(self, client, admin_headers):
+        client.post("/api/admin/seed", headers=admin_headers)
+        job = next(j for j in client.get("/api/jobs").json() if j["job_title"] == "Cloud Data Engineer")
+        res = client.post(f"/api/jobs/{job['job_id']}/match").json()["results"]
+        assert len(res) == 18
+        by_name = {r["full_name"]: r for r in res}
+        assert res[0]["full_name"] == "Thandiwe Nkosi"
+        assert by_name["Sipho Dlamini"]["aliases"] == {"python": "Py"}
+        assert by_name["Lwazi Ngcobo"]["rank"] == 18 or by_name["Lwazi Ngcobo"]["overall_score"] < 40
+
+    def test_seed_large(self, client, admin_headers):
+        r = client.post("/api/admin/seed-large", headers=admin_headers)
+        assert r.status_code == 200, r.text
+        assert r.json()["candidates"] == 2018
+        assert client.get("/api/candidates", params={"page_size": 1}).json()["total"] == 2018
+
+    def test_demo_start_empty_db_seeds(self, client):
+        r = client.post("/api/demo/start").json()
+        assert r["seeded"] is True
+        assert client.get(f"/api/jobs/{r['job_id']}").json()["job_title"] == "Cloud Data Engineer"
+
+    def test_demo_start_keeps_existing_data(self, client):
+        make_candidate(client, full_name="Keep Me")
+        r = client.post("/api/demo/start").json()
+        assert r["seeded"] is False
+        names = [c["full_name"] for c in client.get("/api/candidates").json()["items"]]
+        assert names == ["Keep Me"]
+        assert client.get(f"/api/jobs/{r['job_id']}").json()["job_title"] == "Cloud Data Engineer"

@@ -1,0 +1,199 @@
+{
+  "_note": "All people, emails and companies in this file are fictitious.",
+  "jobs": [
+    {
+      "job_title": "Cloud Data Engineer",
+      "created_by": "Nomvula Khumalo",
+      "min_experience": 3,
+      "min_education": "Bachelor's Degree",
+      "required_skills": ["Python", "SQL", "AWS", "Airflow"],
+      "preferred_skills": ["Spark", "dbt", "Terraform", "Kafka"],
+      "weights": {"skills": 40, "experience": 25, "education": 15, "semantic": 20},
+      "job_description": "We are hiring a Cloud Data Engineer to build and run the data pipelines behind our analytics platform. You will ingest data from operational systems into an AWS data lake, orchestrate scheduled batch and streaming workloads, model data in the warehouse for reporting, and keep pipelines reliable, tested and cost-efficient. You will work with analysts and data scientists to turn raw data into trusted datasets, automate infrastructure, and monitor data quality in production."
+    },
+    {
+      "job_title": "Full-Stack Developer",
+      "created_by": "Nomvula Khumalo",
+      "min_experience": 2,
+      "min_education": "Diploma",
+      "required_skills": ["JavaScript", "React", "Node.js", "PostgreSQL"],
+      "preferred_skills": ["TypeScript", "Docker", "REST APIs"],
+      "weights": {"skills": 45, "experience": 20, "education": 10, "semantic": 25},
+      "job_description": "Join our product team as a Full-Stack Developer building customer-facing web applications. You will design responsive React interfaces, write Node.js services and REST endpoints, model data in a relational database, and ship features end to end with automated tests and code review. Experience deploying containerised apps and caring about accessibility and performance is a plus."
+    },
+    {
+      "job_title": "Business Analyst",
+      "created_by": "Pieter van Wyk",
+      "min_experience": 3,
+      "min_education": "Bachelor's Degree",
+      "required_skills": ["Business Analysis", "Requirements Gathering", "Stakeholder Management", "SQL"],
+      "preferred_skills": ["Power BI", "BPMN", "Agile"],
+      "weights": {"skills": 40, "experience": 25, "education": 15, "semantic": 20},
+      "job_description": "We need a Business Analyst to sit between our operations teams and IT delivery. You will run workshops to understand how work is done today, document requirements and user stories, map and improve business processes, query data to size problems, and make sure what is built solves the real need. Clear writing and confident facilitation with senior stakeholders are essential."
+    }
+  ],
+  "candidates": [
+    {
+      "full_name": "Thandiwe Nkosi",
+      "email": "thandiwe.nkosi@example.co.za",
+      "years_experience": 6,
+      "education": "Honours",
+      "previous_titles": "Senior Data Engineer; Data Engineer",
+      "skills": ["Python", "SQL", "AWS", "Airflow", "Spark", "dbt"],
+      "resume_summary": "Data engineer with six years building production data pipelines. Designed an AWS data lake on S3 with Glue and Athena, orchestrated daily batch loads with Airflow, and modelled warehouse tables in dbt for finance and marketing reporting. Introduced data quality checks and alerting that cut failed loads by 70 percent."
+    },
+    {
+      "full_name": "Sipho Dlamini",
+      "email": "sipho.dlamini@example.co.za",
+      "years_experience": 4,
+      "education": "Bachelor's Degree",
+      "previous_titles": "Data Engineer; BI Developer",
+      "skills": ["Py", "SQL", "AWS", "Airflow", "Kafka", "Terraform"],
+      "resume_summary": "Data engineer at a fintech, owning streaming ingestion from Kafka into an AWS warehouse and the Airflow DAGs that build daily reporting tables. Wrote Terraform modules for the data platform and set up CI for pipeline code. Previously a BI developer building SQL models and dashboards."
+    },
+    {
+      "full_name": "Lerato Mahlangu",
+      "email": "lerato.mahlangu@example.co.za",
+      "years_experience": 5,
+      "education": "Bachelor's Degree",
+      "previous_titles": "ETL Developer; Database Developer",
+      "skills": ["ETL", "Data Warehousing", "Redshift", "Scala"],
+      "resume_summary": "Moved a retailer's nightly reporting loads off an ageing on-premise server and onto Amazon's cloud. I schedule and monitor the jobs that pull sales and stock data from store systems into the lake, process billions of rows with distributed compute, and shape the warehouse tables that analysts and data scientists rely on every morning."
+    },
+    {
+      "full_name": "Kagiso Molefe",
+      "email": "kagiso.molefe@example.co.za",
+      "years_experience": 3,
+      "education": "Bachelor's Degree",
+      "previous_titles": "Junior Data Engineer",
+      "skills": ["Python", "SQL", "S3", "Lambda", "Glue"],
+      "resume_summary": "Build and maintain scheduled workflows that collect data from more than forty operational sources and land it in a cloud data lake. Each workflow is a dependency graph with retries and alerts. I write transformation logic, test datasets before they reach reporting, and keep compute costs under control for the analytics team."
+    },
+    {
+      "full_name": "Ayanda Zulu",
+      "email": "ayanda.zulu@example.co.za",
+      "years_experience": 5,
+      "education": "Diploma",
+      "previous_titles": "Full-Stack Developer; Frontend Developer",
+      "skills": ["JS", "TS", "React", "Node", "Postgres", "Docker"],
+      "resume_summary": "Full-stack developer shipping customer web apps for an online insurer. Built React front ends with accessible, responsive components and Node services exposing REST endpoints over a relational database. Containerised every service and set up automated tests and code review checks."
+    },
+    {
+      "full_name": "Pieter van Wyk",
+      "email": "pieter.vanwyk@example.co.za",
+      "years_experience": 8,
+      "education": "Master's",
+      "previous_titles": "Senior Business Analyst; Process Analyst",
+      "skills": ["Business Analysis", "Requirements Gathering", "Stakeholder Management", "SQL", "BPMN", "Agile"],
+      "resume_summary": "Business analyst with eight years in banking operations. Facilitate workshops with senior stakeholders, document requirements and user stories, and map current and future business processes in BPMN. Query data in SQL to size problems before projects start and work closely with delivery teams through testing."
+    },
+    {
+      "full_name": "Naledi Mokoena",
+      "email": "naledi.mokoena@example.co.za",
+      "years_experience": 2,
+      "education": "Honours",
+      "previous_titles": "Graduate Data Engineer",
+      "skills": ["Python", "SQL", "AWS", "Spark"],
+      "resume_summary": "Graduate data engineer two years into the role, building PySpark jobs on AWS EMR and writing SQL transformations for a telecoms reporting platform. Completed an honours project on scalable stream processing and hold an AWS Cloud Practitioner certificate."
+    },
+    {
+      "full_name": "Johan Botha",
+      "email": "johan.botha@example.co.za",
+      "years_experience": 12,
+      "education": "Bachelor's Degree",
+      "previous_titles": "Database Administrator; Systems Administrator",
+      "skills": ["SQL Server", "SQL", "Backup and Recovery", "PowerShell"],
+      "resume_summary": "Database administrator responsible for on-premise SQL Server estates for twelve years. Tuned queries and indexes, managed backup and recovery, patching and high availability, and automated routine maintenance with PowerShell scripts."
+    },
+    {
+      "full_name": "Zanele Khumalo",
+      "email": "zanele.khumalo@example.co.za",
+      "years_experience": 4,
+      "education": "Bachelor's Degree",
+      "previous_titles": "Data Analyst",
+      "skills": ["SQL", "Power BI", "Excel", "Python"],
+      "resume_summary": "Data analyst building Power BI dashboards and SQL reports for a logistics company. Clean and join data from several systems in Python, define KPIs with operations managers, and present findings to leadership every month."
+    },
+    {
+      "full_name": "Mpho Sithole",
+      "email": "mpho.sithole@example.co.za",
+      "years_experience": 3,
+      "education": "Diploma",
+      "previous_titles": "Software Developer",
+      "skills": ["JavaScript", "React", "Node.js", "MongoDB", "REST APIs"],
+      "resume_summary": "Software developer building React single-page apps and Express services backed by MongoDB. Integrated payment and messaging APIs, wrote unit tests with Jest, and worked in two-week sprints with designers and testers."
+    },
+    {
+      "full_name": "Busisiwe Ndlovu",
+      "email": "busisiwe.ndlovu@example.co.za",
+      "years_experience": 1,
+      "education": "Higher Certificate",
+      "previous_titles": "IT Support Technician",
+      "skills": ["Windows", "Active Directory", "Networking", "Troubleshooting"],
+      "resume_summary": "IT support technician resolving desktop, printer and network issues for 300 staff. Manage user accounts in Active Directory, image laptops and log every ticket with clear notes for the next shift."
+    },
+    {
+      "full_name": "Ruan Pretorius",
+      "email": "ruan.pretorius@example.co.za",
+      "years_experience": 7,
+      "education": "Bachelor's Degree",
+      "previous_titles": "Platform Engineer; DevOps Engineer",
+      "skills": ["AWS", "Terraform", "Kubernetes", "Python", "CI/CD"],
+      "resume_summary": "Platform engineer running Kubernetes clusters on AWS, writing Terraform for networks, IAM and managed databases, and building CI/CD pipelines. Supported the data team by provisioning their warehouse and scheduler infrastructure, but have not built data pipelines myself."
+    },
+    {
+      "full_name": "Fatima Patel",
+      "email": "fatima.patel@example.co.za",
+      "years_experience": 5,
+      "education": "Master's",
+      "previous_titles": "Data Scientist",
+      "skills": ["Python", "ML", "SQL", "scikit-learn", "Statistics"],
+      "resume_summary": "Data scientist building churn and pricing models in Python. Prepare training data with SQL, evaluate models with stakeholders and hand production scoring jobs to engineering. Comfortable explaining statistical results to non-technical audiences."
+    },
+    {
+      "full_name": "Tshepo Masilela",
+      "email": "tshepo.masilela@example.co.za",
+      "years_experience": 2,
+      "education": "Diploma",
+      "previous_titles": "Junior Web Developer",
+      "skills": ["JS", "HTML", "CSS", "React", "PHP"],
+      "resume_summary": "Junior web developer maintaining marketing sites and a React booking widget. Converted designs into responsive pages, fixed cross-browser bugs and added basic analytics tracking."
+    },
+    {
+      "full_name": "Nomsa Shabalala",
+      "email": "nomsa.shabalala@example.co.za",
+      "years_experience": 6,
+      "education": "Honours",
+      "previous_titles": "Business Analyst; Systems Analyst",
+      "skills": ["Business Analysis", "Requirements Gathering", "UML", "Jira"],
+      "resume_summary": "Business analyst in insurance claims. I sit with claims handlers to understand how the work really happens, write requirements and acceptance criteria, draw process and system diagrams, and keep developers and the business aligned during delivery."
+    },
+    {
+      "full_name": "Andile Mthembu",
+      "email": "andile.mthembu@example.co.za",
+      "years_experience": 4,
+      "education": "Bachelor's Degree",
+      "previous_titles": "Data Engineer",
+      "skills": ["Python", "SQL", "Azure", "Databricks", "Spark"],
+      "resume_summary": "Data engineer on Microsoft Azure, building Databricks Spark jobs and Data Factory pipelines that feed a lakehouse used for regulatory reporting. Strong on Python and SQL, data modelling and pipeline testing."
+    },
+    {
+      "full_name": "Chantelle Adams",
+      "email": "chantelle.adams@example.co.za",
+      "years_experience": 3,
+      "education": "Bachelor's Degree",
+      "previous_titles": "QA Engineer",
+      "skills": ["Test Automation", "Selenium", "Python", "SQL"],
+      "resume_summary": "QA engineer writing automated UI and API tests in Python with Selenium and pytest. Validate data in SQL after releases and run regression packs in the CI pipeline before every deployment."
+    },
+    {
+      "full_name": "Lwazi Ngcobo",
+      "email": "lwazi.ngcobo@example.co.za",
+      "years_experience": 0,
+      "education": "Matric",
+      "previous_titles": "Intern",
+      "skills": ["Excel", "Customer Service"],
+      "resume_summary": "Recent school leaver who completed a three-month internship capturing data in Excel and answering customer calls. Eager to learn and studying towards an IT certificate part-time."
+    }
+  ]
+}
