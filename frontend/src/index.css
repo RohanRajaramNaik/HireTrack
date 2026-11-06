@@ -174,3 +174,14 @@
   .range:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 4px rgb(var(--accent) / 0.25); }
   .range:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 4px rgb(var(--accent) / 0.25); }
 }
+
+/* Number boxes next to sliders: no spinner arrows (sliders and arrow keys still work). */
+.no-spin::-webkit-inner-spin-button,
+.no-spin::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+.no-spin { -moz-appearance: textfield; appearance: textfield; }
+
+/* Soft fade instead of a hard clip when chips overflow their cell. */
+.fade-right {
+  -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 24px), transparent);
+  mask-image: linear-gradient(to right, #000 calc(100% - 24px), transparent);
+}

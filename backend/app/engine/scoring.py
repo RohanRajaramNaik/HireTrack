@@ -56,7 +56,7 @@ EDUCATION_NAMES = {
 # roughly between 0.45 and 0.75, so the bands are set on that scale.
 SEMANTIC_CLOSE = 55.0
 SEMANTIC_RELATED = 40.0
-KEYWORD_MISS_SEMANTIC_MIN = 50.0  # "high" semantic score
+KEYWORD_MISS_SEMANTIC_MIN = 60.0  # "high" semantic score
 KEYWORD_MISS_SKILLS_MAX = 60.0  # "low" skills score
 
 
@@ -280,6 +280,8 @@ def explain(
         exp = "no experience minimum applies"
     elif years >= min_experience:
         exp = "meets the experience minimum"
+    elif years <= 0:
+        exp = f"no experience yet against the {fmt_num(min_experience)}-year minimum"
     else:
         exp = f"{_years(min_experience - years)} short of the {fmt_num(min_experience)}-year minimum"
 

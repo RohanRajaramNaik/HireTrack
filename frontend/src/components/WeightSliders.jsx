@@ -40,10 +40,10 @@ export default function WeightSliders({ weights, onChange, mode = 'manual', onRe
           const v = weights[key]
           const pct = Number(v) || 0
           return (
-            <div key={key} className="grid grid-cols-[minmax(0,10rem)_1fr_4.5rem] items-center gap-4">
+            <div key={key} className="grid grid-cols-[minmax(0,11rem)_1fr_4.5rem] items-center gap-4">
               <label htmlFor={`${idPrefix}-${key}-range`} className="min-w-0">
                 <span className="block text-base font-medium text-ink">{INFO[key].label}</span>
-                {!dense && <span className="block truncate text-xs text-faint">{INFO[key].help}</span>}
+                {!dense && <span className="block text-xs leading-4 text-faint">{INFO[key].help}</span>}
               </label>
               <input
                 id={`${idPrefix}-${key}-range`}
@@ -65,7 +65,7 @@ export default function WeightSliders({ weights, onChange, mode = 'manual', onRe
                   step={1}
                   value={v}
                   onChange={(e) => set(key, e.target.value)}
-                  className="input tnum h-8 pr-6 text-right"
+                  className="input no-spin tnum h-8 pr-6 text-right"
                   aria-label={`${INFO[key].label} weight, percent`}
                 />
                 <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-sm text-faint">%</span>

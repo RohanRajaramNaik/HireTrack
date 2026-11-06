@@ -25,7 +25,7 @@ import Tour from '../components/Tour'
 import { useToast } from '../components/Toast'
 import WeightSliders from '../components/WeightSliders'
 import { EmptyState, Skeleton, Spinner } from '../components/ui'
-import { dateTime, skillLabel, timeAgo, years } from '../lib/format'
+import { duration, skillLabel, timeAgo, years } from '../lib/format'
 import { demoState } from '../lib/hooks'
 import { METRICS, calculation, rerank, sameWeights, weightsOf } from '../lib/scoring'
 
@@ -82,8 +82,8 @@ function Breakdown({ row, weights, usingWhatIf, jobTitle }) {
             Ranked <span className="font-semibold text-ink">#{row.rank}</span> for {jobTitle}
           </p>
         </div>
-        <div className="w-[200px] shrink-0">
-          <RadarChart series={[{ label: row.full_name, values: row }]} size={200} />
+        <div className="w-[17rem] shrink-0">
+          <RadarChart series={[{ label: row.full_name, values: row }]} size={170} />
         </div>
       </div>
 
@@ -111,17 +111,19 @@ function Breakdown({ row, weights, usingWhatIf, jobTitle }) {
         ))}
       </div>
 
-      <div className="space-y-4 border-t border-line pt-5">
-        <SkillGroup title="Required skills" matched={row.matched.required} missing={row.missing.required} aliases={row.aliases} />
-        <SkillGroup title="Preferred skills" matched={row.matched.preferred} missing={row.missing.preferred} aliases={row.aliases} />
-      </div>
-
-      <div className="border-t border-line pt-5">
-        <h4 className="text-sm font-medium text-ink">Exact calculation</h4>
-        <p className="mt-1 text-sm text-muted">{usingWhatIf ? 'Using your what-if weights.' : 'Using the weights saved with this run.'}</p>
+      <div>
+        <div className="flex items-baseline justify-between gap-3">
+          <h4 className="text-sm font-medium text-ink">Exact calculation</h4>
+          <p className="text-xs text-faint">{usingWhatIf ? 'Using your what-if weights' : 'Using the weights saved with this run'}</p>
+        </div>
         <p className="tnum mt-2 overflow-x-auto whitespace-nowrap rounded border border-line bg-canvas px-3 py-2.5 font-mono text-[0.8125rem] text-ink">
           {calculation(row, weights)}
         </p>
+      </div>
+
+      <div className="space-y-4 border-t border-line pt-5">
+        <SkillGroup title="Required skills" matched={row.matched.required} missing={row.missing.required} aliases={row.aliases} />
+        <SkillGroup title="Preferred skills" matched={row.matched.preferred} missing={row.missing.preferred} aliases={row.aliases} />
       </div>
 
       <div className="border-t border-line pt-5 text-sm text-muted">
@@ -139,7 +141,7 @@ function Compare({ rows, weights }) {
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-center gap-8">
-        <div className="w-[240px] shrink-0">
+        <div className="w-[22rem] shrink-0">
           <RadarChart series={rows.map((r) => ({ label: r.full_name, values: r }))} size={240} />
         </div>
         <ul className="space-y-2" aria-label="Chart legend">
@@ -247,7 +249,7 @@ function ResultRow({ row, baseRank, entranceDelay, explain, selected, onOpen, ch
           <AnimatedNumber value={row.overall_score} delay={entranceDelay} className="text-2xl font-semibold tracking-tight text-ink" />
         </div>
         {METRICS.map((m) => (
-          <MetricBar key={m.key} label={m.label} value={row[m.field]} delay={entranceDelay + 0.08} />
+          <MetricBar key={m.key} label={m.label} value={row[m.field]} delay={entranceDelay + 0.08} hideLabel />
         ))}
         <ChevronRight size={16} className="text-faint" aria-hidden />
       </div>
@@ -345,7 +347,7 @@ export default function Results() {
     try {
       const d = await api.runMatch(id)
       applyData(d)
-      toast.success('Match complete', `${d.run.candidate_count.toLocaleString()} candidates ranked in ${(d.run.duration_ms / 1000).toFixed(1)} s`)
+      toast.success('Match complete', `${d.run.candidate_count.toLocaleString()} candidates ranked in ${duration(d.run.duration_ms)}`)
     } catch (e) {
       toast.error('Match could not run', e.detail)
     } finally {
@@ -358,7 +360,10 @@ export default function Results() {
 
   // ---------------------------------------------------------- guided tour
   const rescueRow = useMemo(() => {
-    const semantic = rows.find((r) => r.insights.some((t) => t.includes('different words')))
+    // The clearest example: the biggest gap between meaning match and skills match.
+    const semantic = rows
+      .filter((r) => r.insights.some((t) => t.includes('different words')))
+      .sort((a, b) => b.semantic_score - b.skills_score - (a.semantic_score - a.skills_score))[0]
     return semantic || rows.find((r) => r.insights.length) || rows[0]
   }, [rows])
 
@@ -369,7 +374,7 @@ export default function Results() {
         title: 'The ranked shortlist',
         body: (
           <>
-            All {base.length.toLocaleString()} candidates were scored against this job in {data?.run ? (data.run.duration_ms / 1000).toFixed(1) : '–'} s. The top three
+            All {base.length.toLocaleString()} candidates were scored against this job in {data?.run ? duration(data.run.duration_ms) : '–'}. The top three
             carry a blue edge. Every bar also shows its number, so nothing relies on colour.
           </>
         ),
@@ -397,7 +402,8 @@ export default function Results() {
         target: '[data-tour="weights"]',
         title: 'Ask “what if?”',
         body: 'Drag any slider. The list re-ranks instantly in the browser without re-running the match. Try raising Meaning match.',
-        placement: 'bottom',
+        placement: 'bottom-end',
+        dim: false,
         onEnter: () => {
           setSelectedId(null)
           setWhatIfOpen(true)
@@ -445,28 +451,34 @@ export default function Results() {
       {/* Header */}
       <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
         <div className="min-w-0">
-          <label htmlFor="job-switch" className="text-sm text-faint">
-            Results for
-          </label>
-          <div className="relative mt-0.5">
-            <select
-              id="job-switch"
-              value={id || ''}
-              onChange={(e) => navigate(`/results/${e.target.value}`)}
-              className="max-w-full cursor-pointer appearance-none truncate rounded bg-transparent py-0.5 pr-8 text-2xl font-semibold tracking-tight text-ink hover:bg-subtle focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
-            >
-              {(jobs || (job ? [job] : [])).map((j) => (
-                <option key={j.job_id} value={j.job_id}>
-                  {j.job_title}
-                </option>
-              ))}
-            </select>
-            <ChevronDown size={18} className="pointer-events-none absolute right-1.5 top-1/2 -translate-y-1/2 text-faint" aria-hidden />
+          <div className="flex items-center gap-3">
+            <p className="text-sm text-faint">Results for</p>
+            {jobs && jobs.length > 1 && (
+              <div className="relative">
+                <label htmlFor="job-switch" className="sr-only">
+                  Switch job
+                </label>
+                <select
+                  id="job-switch"
+                  value={id || ''}
+                  onChange={(e) => navigate(`/results/${e.target.value}`)}
+                  className="h-6 cursor-pointer appearance-none rounded border border-line bg-surface pl-2 pr-6 text-xs font-medium text-muted hover:border-line-strong hover:text-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
+                >
+                  {jobs.map((j) => (
+                    <option key={j.job_id} value={j.job_id}>
+                      {j.job_title}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown size={12} className="pointer-events-none absolute right-1.5 top-1/2 -translate-y-1/2 text-faint" aria-hidden />
+              </div>
+            )}
           </div>
+          <h1 className="mt-0.5 truncate text-2xl font-semibold tracking-tight text-ink">{job?.job_title || 'Results'}</h1>
           {run ? (
             <p className="tnum mt-1 text-sm text-muted">
-              Matched {timeAgo(run.run_at)} ({dateTime(run.run_at)}) · {run.candidate_count.toLocaleString()} candidates · ran in{' '}
-              {(run.duration_ms / 1000).toFixed(2)} s · weights {run.w_skills} / {run.w_experience} / {run.w_education} / {run.w_semantic}
+              Matched {timeAgo(run.run_at)} · {run.candidate_count.toLocaleString()} candidates ranked in {duration(run.duration_ms)} · weights{' '}
+              {run.w_skills} / {run.w_experience} / {run.w_education} / {run.w_semantic}
             </p>
           ) : (
             !loading && <p className="mt-1 text-sm text-muted">Not matched yet.</p>
@@ -533,7 +545,9 @@ export default function Results() {
         <div className="overflow-x-auto">
           <div className="min-w-[62rem]">
             <div className={`${GRID} border-b border-line bg-canvas px-5 py-2.5`}>
-              <span className="sr-only">Compare</span>
+              <span>
+                <span className="sr-only">Compare</span>
+              </span>
               <span className="th">Rank</span>
               <span className="th">Candidate</span>
               <span className="th text-right">Overall</span>

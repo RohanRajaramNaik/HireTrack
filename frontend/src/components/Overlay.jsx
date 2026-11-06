@@ -16,8 +16,13 @@ function useDialogFocus(open, ref, onClose, initialFocus) {
     stack.push(token)
     const previous = document.activeElement
     const t = setTimeout(() => {
-      const el = (initialFocus && initialFocus.current) || ref.current?.querySelector(FOCUSABLE)
-      el?.focus()
+      // Prefer an explicit target, then the first form field, then the dialog
+      // itself (so a read-only panel does not open with a ring on "Close").
+      const el =
+        (initialFocus && initialFocus.current) ||
+        ref.current?.querySelector('input:not([type="hidden"]):not([disabled]),textarea,select') ||
+        ref.current
+      el?.focus({ preventScroll: true })
     }, 30)
     const onKey = (e) => {
       if (stack[stack.length - 1] !== token) return
@@ -71,7 +76,8 @@ export function SlideOver({ open, onClose, title, subtitle, children, footer, wi
             aria-modal="true"
             aria-labelledby={titleId}
             data-tour={tourId}
-            className={`relative flex h-full ${width} max-w-[calc(100vw-2rem)] flex-col border-l border-line bg-surface shadow-panel`}
+            tabIndex={-1}
+            className={`relative flex h-full ${width} outline-none max-w-[calc(100vw-2rem)] flex-col border-l border-line bg-surface shadow-panel`}
             initial={{ x: 48, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: 48, opacity: 0 }}

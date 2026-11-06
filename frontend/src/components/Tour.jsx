@@ -38,8 +38,13 @@ export default function Tour({ steps, open, onClose }) {
       const el = document.querySelector(step.target)
       if (el) {
         if (!scrolled) {
+          // Bring the top of the target just under the sticky nav. Tall targets
+          // (the whole results list) are aligned by their top, never centred.
           const r0 = el.getBoundingClientRect()
-          if (r0.top < 64 || r0.bottom > window.innerHeight) el.scrollIntoView({ block: 'center', behavior: 'smooth' })
+          const scroller = el.closest('.overflow-y-auto')
+          if (!scroller && (r0.top < 72 || r0.top > window.innerHeight - 160)) {
+            window.scrollBy({ top: r0.top - 88, behavior: 'smooth' })
+          }
           scrolled = true
         }
         const r = el.getBoundingClientRect()
@@ -85,7 +90,9 @@ export default function Tour({ steps, open, onClose }) {
     const spaceRight = vw - (rect.left + rect.width)
     const spaceLeft = rect.left
     const clampTop = (t) => Math.max(72, Math.min(vh - cardH - 16, t))
-    if ((placement === 'left' || (placement === 'auto' && spaceLeft > CARD_W + 32 && spaceRight < CARD_W + 32)) && spaceLeft > CARD_W + 24) {
+    if (placement === 'bottom-end' && rect.top + rect.height + cardH + 24 < vh) {
+      cardPos = { top: rect.top + rect.height + 16, left: Math.max(16, rect.left + rect.width - CARD_W) }
+    } else if ((placement === 'left' || (placement === 'auto' && spaceLeft > CARD_W + 32 && spaceRight < CARD_W + 32)) && spaceLeft > CARD_W + 24) {
       cardPos = { top: clampTop(rect.top), left: rect.left - CARD_W - 20 }
     } else if ((placement === 'right' || placement === 'auto') && spaceRight > CARD_W + 24) {
       cardPos = { top: clampTop(rect.top), left: rect.left + rect.width + 20 }
@@ -109,7 +116,7 @@ export default function Tour({ steps, open, onClose }) {
             : { top: vh / 2, left: vw / 2, width: 0, height: 0, opacity: 1 }
         }
         transition={{ type: 'spring', stiffness: 320, damping: 34 }}
-        style={{ boxShadow: '0 0 0 9999px rgb(15 23 42 / 0.45)' }}
+        style={{ boxShadow: step.dim === false ? 'none' : '0 0 0 9999px rgb(15 23 42 / 0.45)' }}
       />
       <AnimatePresence mode="wait">
         <motion.div

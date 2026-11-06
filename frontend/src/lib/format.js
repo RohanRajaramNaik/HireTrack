@@ -3,7 +3,7 @@ const asDate = (iso) => new Date(/Z|[+-]\d\d:?\d\d$/.test(iso) ? iso : iso + 'Z'
 export function timeAgo(iso) {
   if (!iso) return 'Never'
   const s = Math.round((Date.now() - asDate(iso).getTime()) / 1000)
-  if (s < 45) return 'Just now'
+  if (s < 45) return 'just now'
   const m = Math.round(s / 60)
   if (m < 60) return `${m} min ago`
   const h = Math.round(m / 60)
@@ -11,6 +11,14 @@ export function timeAgo(iso) {
   const days = Math.round(h / 24)
   if (days < 7) return `${days} day${days === 1 ? '' : 's'} ago`
   return asDate(iso).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })
+}
+
+export const capitalise = (s) => (s ? s[0].toUpperCase() + s.slice(1) : s)
+
+/** 12 -> "12 ms", 1530 -> "1.5 s" */
+export function duration(ms) {
+  if (ms < 1000) return `${Math.max(1, Math.round(ms))} ms`
+  return `${(ms / 1000).toFixed(1)} s`
 }
 
 export function dateTime(iso) {

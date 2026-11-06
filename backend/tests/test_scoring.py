@@ -256,6 +256,14 @@ class TestExplain:
         assert s.alias_hits == {"javascript": "JS"}
         assert any('"JS"' in n for n in s.keyword_insights)
 
+    def test_no_experience_wording(self):
+        m = skills_score([], ["a"], [])
+        assert "no experience yet against the 3-year minimum" in explain(m, 0, 3, 1, 1, 10)
+
+    def test_keyword_insight_threshold(self):
+        m = skills_score([], ["a", "b"], [])
+        assert keyword_insights(m, 59.9, m.score, {}) == []
+
     def test_keyword_insight_semantic_rescue(self):
         m = skills_score([], ["a", "b"], [])
         notes = keyword_insights(m, 65, m.score, {})

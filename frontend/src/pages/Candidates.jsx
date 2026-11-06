@@ -312,7 +312,7 @@ export default function Candidates() {
                 <div style={{ height: virtualizer.getTotalSize(), position: 'relative' }}>
                   {virtualizer.getVirtualItems().map((vr) => {
                     const c = filtered[vr.index]
-                    const shown = c.skills.slice(0, 4)
+                    const shown = c.skills.slice(0, 3)
                     return (
                       <div
                         key={c.candidate_id}
@@ -326,13 +326,19 @@ export default function Candidates() {
                           <p className="truncate text-sm text-faint">{c.email || 'No email'}</p>
                         </div>
                         <p className="truncate text-sm text-muted">{c.previous_titles || '–'}</p>
-                        <div className="flex min-w-0 items-center gap-1 overflow-hidden">
-                          {shown.map((s) => (
-                            <span key={s} className="chip shrink-0">
-                              {s}
+                        <div className="flex min-w-0 items-center gap-2">
+                          <div className="fade-right flex min-w-0 items-center gap-1 overflow-hidden">
+                            {shown.map((s) => (
+                              <span key={s} className="chip max-w-[10rem] shrink-0">
+                                <span className="truncate">{s}</span>
+                              </span>
+                            ))}
+                          </div>
+                          {c.skills.length > shown.length && (
+                            <span className="tnum shrink-0 text-sm text-faint" title={c.skills.slice(shown.length).join(', ')}>
+                              +{c.skills.length - shown.length}
                             </span>
-                          ))}
-                          {c.skills.length > shown.length && <span className="tnum shrink-0 text-sm text-faint">+{c.skills.length - shown.length}</span>}
+                          )}
                         </div>
                         <p className="tnum text-base text-ink">{years(c.years_experience)}</p>
                         <p className="truncate text-sm text-muted">{c.level_name}</p>

@@ -8,7 +8,7 @@ import TagInput from '../components/TagInput'
 import { useToast } from '../components/Toast'
 import WeightSliders from '../components/WeightSliders'
 import { Field, Skeleton, Spinner } from '../components/ui'
-import { timeAgo } from '../lib/format'
+import { skillLabel, timeAgo } from '../lib/format'
 import { useEducationLevels } from '../lib/hooks'
 import { DEFAULT_WEIGHTS, toWeightFields, weightTotal, weightsOf } from '../lib/scoring'
 import { validateJob } from '../lib/validation'
@@ -30,8 +30,8 @@ const fromJob = (j) => ({
   min_experience: j.min_experience,
   min_level_id: String(j.min_level_id),
   job_description: j.job_description,
-  required_skills: j.required_skills,
-  preferred_skills: j.preferred_skills,
+  required_skills: j.required_skills.map(skillLabel),
+  preferred_skills: j.preferred_skills.map(skillLabel),
   weights: weightsOf(j),
 })
 
@@ -280,7 +280,7 @@ export default function Jobs() {
                   )}
                 </Field>
                 <div className="grid gap-4 sm:grid-cols-3">
-                  <Field label="Minimum experience" error={errors.min_experience} hint="Years">
+                  <Field label="Minimum years" error={errors.min_experience}>
                     {({ id, invalid, describedBy }) => (
                       <input id={id} type="number" min={0} max={50} step={0.5} className="input tnum" value={v.min_experience} onChange={set('min_experience')} aria-invalid={invalid} aria-describedby={describedBy} />
                     )}

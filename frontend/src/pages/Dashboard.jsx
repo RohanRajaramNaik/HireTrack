@@ -5,7 +5,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { api } from '../apiClient'
 import { Skeleton, Spinner } from '../components/ui'
 import { useToast } from '../components/Toast'
-import { timeAgo } from '../lib/format'
+import { capitalise, timeAgo } from '../lib/format'
 import { demoState } from '../lib/hooks'
 
 function Tile({ label, value, sub, index }) {
@@ -59,7 +59,7 @@ export default function Dashboard() {
     ? [
         { label: 'Candidates in database', value: stats.candidates.toLocaleString(), sub: stats.candidates ? 'Ready to match' : 'None yet. Add or load demo data.' },
         { label: 'Open jobs', value: stats.jobs.toLocaleString(), sub: stats.jobs ? 'Job specifications saved' : 'Create your first job' },
-        { label: 'Last match run', value: stats.last_run_at ? timeAgo(stats.last_run_at) : 'Never', sub: stats.last_run_job_title || 'No matches run yet' },
+        { label: 'Last match run', value: stats.last_run_at ? capitalise(timeAgo(stats.last_run_at)) : 'Never', sub: stats.last_run_job_title || 'No matches run yet' },
         { label: 'Average match score', value: stats.average_score != null ? stats.average_score.toFixed(1) : '–', sub: stats.average_score != null ? 'Across the last run, out of 100' : 'Shown after your first run' },
       ]
     : null
