@@ -72,7 +72,7 @@ export default function RadarChart({ series, size = 220 }) {
             strokeDasharray={st.dash}
             strokeLinejoin="round"
             initial={{ opacity: 0, scale: 0.6 }}
-            animate={{ opacity: 1, scale: 1, points: poly(s.values) }}
+            animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5, ease: 'easeOut', delay: 0.1 + idx * 0.08 }}
             style={{ transformOrigin: `${cx}px ${cy}px` }}
           />

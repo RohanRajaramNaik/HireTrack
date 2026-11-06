@@ -201,6 +201,7 @@ npm test                                               # Vitest: MetricBar, Weig
 # with the app running on :8000 (uses your installed Edge or Chrome):
 node e2e/screens.mjs ../docs/screenshots               # every screen at 1366x768 and 1920x1080
 node e2e/demo-flow.mjs ../docs/evidence                # records the guided demo and checks it
+HT_PASS=<passcode> node e2e/full-flow.mjs              # full UI run: seed, job, match, what-if, CSV, backup, restore
 ```
 
 See [docs/test_report.md](docs/test_report.md) for the latest results.
