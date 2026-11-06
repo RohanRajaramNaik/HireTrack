@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { Moon, Sun } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { Check, Menu, Moon, Sun, X } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
 import { NavLink, Route, Routes, useLocation } from 'react-router-dom'
 import Admin from './pages/Admin'
 import Candidates from './pages/Candidates'
@@ -64,15 +64,35 @@ function Logo() {
 
 function TopNav() {
   const location = useLocation()
+  const [menuOpen, setMenuOpen] = useState(false)
+  const menuRef = useRef(null)
   const isActive = (item) =>
     item.end ? location.pathname === item.to : location.pathname === item.to || location.pathname.startsWith(item.to + '/')
+  const current = NAV.find(isActive) || NAV[0]
+
+  // Close the compact menu on navigation, outside click or Escape.
+  useEffect(() => setMenuOpen(false), [location.pathname])
+  useEffect(() => {
+    if (!menuOpen) return undefined
+    const onDown = (e) => menuRef.current && !menuRef.current.contains(e.target) && setMenuOpen(false)
+    const onKey = (e) => e.key === 'Escape' && setMenuOpen(false)
+    document.addEventListener('mousedown', onDown)
+    document.addEventListener('keydown', onKey)
+    return () => {
+      document.removeEventListener('mousedown', onDown)
+      document.removeEventListener('keydown', onKey)
+    }
+  }, [menuOpen])
+
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-surface/95 backdrop-blur-[2px]">
-      <div className="mx-auto flex h-14 max-w-content items-center gap-8 px-6">
-        <NavLink to="/" className="rounded" aria-label="HireTrack dashboard">
+      <div className="mx-auto flex h-14 max-w-content items-center gap-6 px-6 lg:gap-8">
+        <NavLink to="/" className="shrink-0 rounded" aria-label="HireTrack dashboard">
           <Logo />
         </NavLink>
-        <nav aria-label="Main" className="flex h-full items-stretch gap-1 overflow-x-auto">
+
+        {/* Full navigation: shown whenever there is room (768 px and up). Never scrolls. */}
+        <nav aria-label="Main" className="hidden h-full items-stretch md:flex">
           {NAV.map((item) => {
             const active = isActive(item)
             return (
@@ -80,7 +100,7 @@ function TopNav() {
                 key={item.to}
                 to={item.to}
                 end={item.end}
-                className={`relative flex items-center whitespace-nowrap px-3 text-base font-medium transition-colors ${
+                className={`relative flex items-center whitespace-nowrap px-2.5 text-base font-medium transition-colors lg:px-3 ${
                   active ? 'text-ink' : 'text-muted hover:text-ink'
                 }`}
               >
@@ -88,7 +108,7 @@ function TopNav() {
                 {active && (
                   <motion.span
                     layoutId="nav-underline"
-                    className="absolute inset-x-3 -bottom-px h-0.5 rounded-full bg-accent"
+                    className="absolute inset-x-2.5 -bottom-px h-0.5 rounded-full bg-accent lg:inset-x-3"
                     transition={{ type: 'spring', stiffness: 500, damping: 40 }}
                   />
                 )}
@@ -96,8 +116,53 @@ function TopNav() {
             )
           })}
         </nav>
-        <div className="ml-auto flex items-center gap-1">
-          <span className="hidden text-xs text-faint lg:inline">Local · offline</span>
+
+        {/* Compact navigation for narrow windows: current page + dropdown menu. */}
+        <div ref={menuRef} className="relative md:hidden">
+          <button
+            type="button"
+            className="btn-secondary btn-sm"
+            onClick={() => setMenuOpen((o) => !o)}
+            aria-expanded={menuOpen}
+            aria-controls="mobile-nav"
+          >
+            {menuOpen ? <X size={15} aria-hidden /> : <Menu size={15} aria-hidden />}
+            {current.label}
+          </button>
+          <AnimatePresence>
+            {menuOpen && (
+              <motion.nav
+                id="mobile-nav"
+                aria-label="Main"
+                initial={{ opacity: 0, y: -4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -4 }}
+                transition={{ duration: 0.12 }}
+                className="absolute left-0 top-full mt-2 w-56 rounded-lg border border-line bg-surface p-1 shadow-pop"
+              >
+                {NAV.map((item) => {
+                  const active = isActive(item)
+                  return (
+                    <NavLink
+                      key={item.to}
+                      to={item.to}
+                      end={item.end}
+                      className={`flex items-center justify-between rounded px-3 py-2 text-base font-medium ${
+                        active ? 'bg-accent-soft text-accent-ink' : 'text-ink hover:bg-subtle'
+                      }`}
+                    >
+                      {item.label}
+                      {active && <Check size={14} aria-hidden />}
+                    </NavLink>
+                  )
+                })}
+              </motion.nav>
+            )}
+          </AnimatePresence>
+        </div>
+
+        <div className="ml-auto flex shrink-0 items-center gap-1">
+          <span className="hidden text-xs text-faint xl:inline">Local · offline</span>
           <ThemeToggle />
         </div>
       </div>
