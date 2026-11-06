@@ -71,6 +71,9 @@ class CandidateSkill(Base):
         ForeignKey("candidate.candidate_id", ondelete="CASCADE"), primary_key=True
     )
     skill_id: Mapped[int] = mapped_column(ForeignKey("skill.skill_id", ondelete="CASCADE"), primary_key=True)
+    # What the user actually typed (e.g. "JS" for javascript). Lets the results
+    # screen explain alias matches. Depends on the full key, so 3NF holds.
+    entered_as: Mapped[str | None] = mapped_column(String(60), nullable=True)
 
     candidate: Mapped[Candidate] = relationship(back_populates="skills")
     skill: Mapped[Skill] = relationship(lazy="joined")
@@ -141,6 +144,10 @@ class MatchResult(Base):
     # {"required": [...], "preferred": [...]}
     missing_skills: Mapped[dict] = mapped_column(JSON, nullable=False)
     run_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
+    # Snapshot of the plain-English explanation and keyword-search notes at run
+    # time, so they always agree with the stored scores.
+    explanation: Mapped[str | None] = mapped_column(Text, nullable=True)
+    insights: Mapped[list | None] = mapped_column(JSON, nullable=True)
 
     candidate: Mapped[Candidate] = relationship(lazy="joined")
 
