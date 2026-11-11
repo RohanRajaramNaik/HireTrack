@@ -1,7 +1,7 @@
 # HireTrack Installation Guide
 
 HireTrack: Applicant Tracking and Resource Allocation System
-IT Project (Year 3), Phase 5 Implementation. Student 402311822.
+IT Project (Year 3), Phase 5 Implementation. Group: Rohan Naik (402311822), Nadhir Mahomed (402110343), Joshua S Pillay (402200878), Sheik Kader (402413277), Tiara Govender (402306095), Rudo Fourie (402410352).
 
 This guide installs HireTrack on one Windows or macOS computer. It takes 5 to 10 minutes the first time. After installation the system runs fully offline.
 

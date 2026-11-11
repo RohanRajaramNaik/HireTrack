@@ -1,6 +1,6 @@
 # HireTrack: Applicant Tracking and Resource Allocation System
 
-Richfield IT Project (Year 3), Semester 2 2026. Phase 5 Implementation. Student 402311822.
+Richfield IT Project (Year 3), Semester 2 2026. Phase 5 Implementation. Group: Rohan Naik (402311822), Nadhir Mahomed (402110343), Joshua S Pillay (402200878), Sheik Kader (402413277), Tiara Govender (402306095), Rudo Fourie (402410352).
 Repository: https://github.com/RohanRajaramNaik/hiretrack
 Installation guide: [INSTALLATION_GUIDE.md](INSTALLATION_GUIDE.md). Phase 5 report: [docs/report/](docs/report/).
 
