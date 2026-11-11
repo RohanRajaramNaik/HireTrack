@@ -1,0 +1,50 @@
+============================= test session starts =============================
+platform win32 -- Python 3.11.18, pytest-9.2.0, pluggy-1.7.0 -- C:\Users\rohan\hiretrack-matching-engine\.venv\Scripts\python.exe
+rootdir: C:\Users\rohan\hiretrack-matching-engine\backend
+configfile: pytest.ini
+plugins: anyio-4.16.0, platformdirs-4.14.5, cov-6.1.1
+collecting ... collected 3 items
+
+tests/integration/test_performance.py::test_match_50_candidates_under_5s INFO hiretrack: HireTrack started on 127.0.0.1:8000
+INFO hiretrack.users: User id=1 signed in
+INFO hiretrack.seed: Seeded 50 candidates and 3 jobs
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|##########| 103/103 [00:00<00:00, 3348.29it/s]
+INFO hiretrack.embeddings: Loaded sentence-transformers model from C:\Users\rohan\hiretrack-matching-engine\models\all-MiniLM-L6-v2
+INFO hiretrack.embeddings: Saved 50 embeddings to disk cache
+INFO hiretrack.seed: Embedding cache warm: 50 texts in 7.6s
+INFO hiretrack.embeddings: Saved 51 embeddings to disk cache
+INFO hiretrack.match: Match run job id=3 candidates=50 duration_ms=483
+
+50 candidates, nothing cached: 0.52s  embedder=all-MiniLM-L6-v2
+PASSED
+tests/integration/test_performance.py::test_match_2600_candidates INFO hiretrack: HireTrack started on 127.0.0.1:8000
+INFO hiretrack.users: User id=1 signed in
+INFO hiretrack.backup: Backup created: hiretrack-20261111-115212-494-preseed.db (pre-seed)
+INFO hiretrack.seed: Seeded 2600 candidates and 33 jobs
+INFO hiretrack.seed: Seeded 856 applications, 1924 events, 76 staff, 12 projects, 98 allocations
+INFO hiretrack.embeddings: Saved 2600 embeddings to disk cache
+INFO hiretrack.seed: Embedding cache warm: 2600 texts in 20.1s
+INFO hiretrack.seed: Embedding cache warm: 2600 texts in 0.0s
+INFO hiretrack.embeddings: Saved 2601 embeddings to disk cache
+INFO hiretrack.match: Match run job id=33 candidates=2600 duration_ms=501
+INFO hiretrack.match: Match run job id=33 candidates=2600 duration_ms=411
+INFO hiretrack.match: Match run job id=33 candidates=2600 duration_ms=413
+
+2,600 CVs encoded once (background, after loading): 20.1s
+2,600 candidates, match with warm cache: 0.93s best, 1.06s worst, embedder=all-MiniLM-L6-v2
+2,600 results loaded for the Results page: 0.36s
+PASSED
+tests/integration/test_performance.py::test_match_full_dataset_600_candidates INFO hiretrack: HireTrack started on 127.0.0.1:8000
+INFO hiretrack.users: User id=1 signed in
+INFO hiretrack.backup: Backup created: hiretrack-20261111-115238-214-preseed.db (pre-seed)
+INFO hiretrack.seed: Seeded 600 candidates and 33 jobs
+INFO hiretrack.seed: Seeded 847 applications, 1906 events, 73 staff, 12 projects, 102 allocations
+INFO hiretrack.seed: Embedding cache warm: 600 texts in 0.0s
+INFO hiretrack.seed: Embedding cache warm: 600 texts in 0.0s
+INFO hiretrack.embeddings: Saved 2602 embeddings to disk cache
+INFO hiretrack.match: Match run job id=1 candidates=600 duration_ms=71
+
+600 candidates, full match (score + save + reload): 0.16s, embedder=all-MiniLM-L6-v2
+PASSED
+
+============================= 3 passed in 37.64s ==============================

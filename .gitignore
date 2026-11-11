@@ -28,7 +28,9 @@ frontend/coverage/
 # Playwright and screenshot evidence (large, regenerable)
 playwright-report/
 test-results/
-docs/screenshots/
+docs/screenshots/large/
+docs/screenshots/r3/
+docs/screenshots/nav-*.png
 docs/evidence/
 *.webm
 frontend/e2e/output/
@@ -38,3 +40,7 @@ frontend/e2e/output/
 Thumbs.db
 .idea/
 .vscode/
+
+# Playwright e2e database and outputs
+e2e-data/
+frontend/test-results/

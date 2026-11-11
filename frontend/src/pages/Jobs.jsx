@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { PlayCircle, Plus, Save, Trash2, Zap } from 'lucide-react'
+import { KanbanSquare, PlayCircle, Plus, Save, Search, Trash2, Zap } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { api } from '../apiClient'
@@ -8,6 +8,7 @@ import TagInput from '../components/TagInput'
 import { useToast } from '../components/Toast'
 import WeightSliders from '../components/WeightSliders'
 import { Field, Skeleton, Spinner } from '../components/ui'
+import { useAuth } from '../lib/auth'
 import { skillLabel, timeAgo } from '../lib/format'
 import { useEducationLevels } from '../lib/hooks'
 import { DEFAULT_WEIGHTS, toWeightFields, weightTotal, weightsOf } from '../lib/scoring'
@@ -16,6 +17,8 @@ import { validateJob } from '../lib/validation'
 const BLANK = {
   job_title: '',
   created_by: '',
+  location: '',
+  status: 'open',
   min_experience: 0,
   min_level_id: '4',
   job_description: '',
@@ -27,6 +30,8 @@ const BLANK = {
 const fromJob = (j) => ({
   job_title: j.job_title,
   created_by: j.created_by || '',
+  location: j.location || '',
+  status: j.status || 'open',
   min_experience: j.min_experience,
   min_level_id: String(j.min_level_id),
   job_description: j.job_description,
@@ -38,6 +43,8 @@ const fromJob = (j) => ({
 const toBody = (v) => ({
   job_title: v.job_title.trim(),
   created_by: v.created_by.trim() || null,
+  location: v.location.trim(),
+  status: v.status,
   min_experience: Number(v.min_experience),
   min_level_id: Number(v.min_level_id),
   job_description: v.job_description.trim(),
@@ -59,6 +66,10 @@ function Section({ title, description, children }) {
 }
 
 export default function Jobs() {
+  const { user, can } = useAuth()
+  const canEdit = can('hiring:write')
+  const canMatch = can('results:view')
+  const [filter, setFilter] = useState('')
   const { jobId } = useParams()
   const location = useLocation()
   const navigate = useNavigate()
@@ -104,8 +115,9 @@ export default function Jobs() {
     setErrors({})
     setSubmitted(false)
     if (!currentId) {
-      setV(BLANK)
-      setSaved(BLANK)
+      const blank = { ...BLANK, created_by: user.full_name }
+      setV(blank)
+      setSaved(blank)
       return
     }
     setLoadingJob(true)
@@ -216,13 +228,33 @@ export default function Jobs() {
         <div className="mb-3 flex items-center justify-between">
           <h1 className="text-lg font-semibold tracking-tight text-ink">Job specifications</h1>
         </div>
-        <Link to="/jobs/new" className="btn-secondary mb-3 w-full">
-          <Plus size={16} aria-hidden /> New job
-        </Link>
-        <nav aria-label="Saved jobs" className="space-y-0.5">
+        {canEdit && (
+          <Link to="/jobs/new" className="btn-secondary mb-3 w-full">
+            <Plus size={16} aria-hidden /> New job
+          </Link>
+        )}
+        {jobs && jobs.length > 6 && (
+          <div className="relative mb-2">
+            <Search size={14} className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-faint" aria-hidden />
+            <input
+              type="search"
+              className="input h-8 pl-8 text-sm"
+              placeholder="Filter jobs"
+              aria-label="Filter jobs"
+              value={filter}
+              onChange={(e) => setFilter(e.target.value)}
+            />
+          </div>
+        )}
+        <nav aria-label="Saved jobs" className="max-h-[calc(100vh-14rem)] space-y-0.5 overflow-y-auto pr-1">
           {jobs === null
             ? [0, 1, 2].map((i) => <Skeleton key={i} className="h-12 w-full" />)
-            : jobs.map((j) => {
+            : jobs
+                .filter((j) => {
+                  const q = filter.trim().toLowerCase()
+                  return !q || j.job_title.toLowerCase().includes(q) || j.location.toLowerCase().includes(q)
+                })
+                .map((j) => {
                 const active = j.job_id === currentId
                 return (
                   <Link
@@ -233,7 +265,10 @@ export default function Jobs() {
                   >
                     {active && <span className="absolute inset-y-2 left-0 w-0.5 rounded-full bg-accent" aria-hidden />}
                     <span className="block truncate text-base font-medium text-ink">{j.job_title}</span>
-                    <span className="block truncate text-xs text-faint">{j.last_run_at ? `Matched ${timeAgo(j.last_run_at)}` : 'Not matched yet'}</span>
+                    <span className="block truncate text-xs text-faint">
+                      {j.status === 'closed' ? 'Closed · ' : ''}
+                      {j.location} · {j.last_run_at ? `matched ${timeAgo(j.last_run_at)}` : 'not matched yet'}
+                    </span>
                   </Link>
                 )
               })}
@@ -259,14 +294,21 @@ export default function Jobs() {
 
         <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
           <div className="min-w-0">
-            <p className="text-sm text-faint">{isNew ? 'New job specification' : 'Editing job specification'}</p>
+            <p className="text-sm text-faint">{isNew ? 'New job specification' : canEdit ? 'Editing job specification' : 'Job specification (read only)'}</p>
             <h2 className="truncate text-2xl font-semibold tracking-tight text-ink">{v.job_title.trim() || 'Untitled job'}</h2>
           </div>
-          {currentMeta?.last_run_at && (
-            <Link to={`/results/${currentId}`} className="text-sm font-medium text-accent hover:underline">
-              View last results ({timeAgo(currentMeta.last_run_at)})
-            </Link>
-          )}
+          <div className="flex flex-wrap items-center gap-4">
+            {currentId && (
+              <Link to={`/pipeline/${currentId}`} className="inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:underline">
+                <KanbanSquare size={14} aria-hidden /> Pipeline for this job
+              </Link>
+            )}
+            {canMatch && currentMeta?.last_run_at && (
+              <Link to={`/results/${currentId}`} className="text-sm font-medium text-accent hover:underline">
+                View last results ({timeAgo(currentMeta.last_run_at)})
+              </Link>
+            )}
+          </div>
         </div>
 
         <form
@@ -284,7 +326,7 @@ export default function Jobs() {
               ))}
             </div>
           ) : (
-            <>
+            <fieldset disabled={!canEdit} className="min-w-0">
               <Section title="Role" description="The basics a candidate must meet.">
                 <Field label="Job title" error={errors.job_title}>
                   {({ id, invalid, describedBy }) => (
@@ -311,6 +353,21 @@ export default function Jobs() {
                   </Field>
                   <Field label="Created by" optional>
                     {({ id }) => <input id={id} className="input" value={v.created_by} onChange={set('created_by')} maxLength={100} />}
+                  </Field>
+                </div>
+                <div className="grid gap-4 sm:grid-cols-3">
+                  <Field label="Location" error={errors.location} className="sm:col-span-2">
+                    {({ id, invalid, describedBy }) => (
+                      <input id={id} className="input" value={v.location} onChange={set('location')} aria-invalid={invalid} aria-describedby={describedBy} maxLength={80} placeholder="e.g. Johannesburg, or Remote" />
+                    )}
+                  </Field>
+                  <Field label="Status" hint="Closed jobs accept no new applicants.">
+                    {({ id, describedBy }) => (
+                      <select id={id} className="input" value={v.status} onChange={set('status')} aria-describedby={describedBy}>
+                        <option value="open">Open</option>
+                        <option value="closed">Closed</option>
+                      </select>
+                    )}
                   </Field>
                 </div>
               </Section>
@@ -349,9 +406,10 @@ export default function Jobs() {
                   </p>
                 )}
               </Section>
-            </>
+            </fieldset>
           )}
 
+          {canEdit && (
           <div className="sticky bottom-0 flex flex-wrap items-center gap-2 rounded-b-lg border-t border-line bg-surface/95 px-6 py-3 backdrop-blur-[2px]">
             {currentId && (
               <button type="button" className="btn-danger-ghost -ml-2" onClick={() => setConfirmDelete(true)}>
@@ -377,13 +435,14 @@ export default function Jobs() {
               {busy === 'run' ? 'Matching…' : 'Run Match'}
             </button>
           </div>
+          )}
         </form>
         {slowRun && (
           <p className="mt-2 text-right text-sm text-muted" role="status">
             Reading new CVs for the first time. This takes about 10 seconds per 1,000 candidates and only happens once.
           </p>
         )}
-        {!canRun && total !== 100 && (
+        {canEdit && !canRun && total !== 100 && (
           <p className="mt-2 text-right text-sm text-warn">Run Match unlocks when the weights total exactly 100% (now {total}%).</p>
         )}
       </div>

@@ -135,5 +135,10 @@ def restore_backup(file_name: str) -> dict:
         mem.close()
         dest.close()
     engine.dispose()
+    # A backup made by an older build may be missing newer tables or columns
+    # (or the user accounts); init_db adds them without touching existing rows.
+    from ..database import init_db
+
+    init_db()
     log.info("Restored database from %s (safety backup %s)", file_name, safety["file"])
     return {"restored": file_name, "safety_backup": safety["file"]}

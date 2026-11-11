@@ -1,6 +1,6 @@
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it } from 'vitest'
 import { calculation, overallScore, rebalance, rerank } from '../lib/scoring'
-import { validateCandidate, validateJob } from '../lib/validation'
+import { setSkillAliases, validateCandidate, validateJob } from '../lib/validation'
 
 const W = { skills: 40, experience: 25, education: 15, semantic: 20 }
 const row = (id, name, s, e, d, m) => ({
@@ -101,6 +101,7 @@ describe('form validation', () => {
 
   const goodJob = {
     job_title: 'Data Engineer',
+    location: 'Johannesburg',
     min_experience: 3,
     min_level_id: '4',
     job_description: 'Design and run data pipelines on AWS for analytics.',
@@ -108,6 +109,16 @@ describe('form validation', () => {
     preferred_skills: ['AWS'],
     weights: { ...W },
   }
+
+  it('requires a job location', () => {
+    expect(validateJob({ ...goodJob, location: ' ' }).location).toBe('Location is required')
+  })
+
+  it('checks the phone number format but allows it to be blank', () => {
+    expect(validateCandidate({ ...goodCandidate, phone: '' }).phone).toBeUndefined()
+    expect(validateCandidate({ ...goodCandidate, phone: '+27 82 555 0101' }).phone).toBeUndefined()
+    expect(validateCandidate({ ...goodCandidate, phone: 'call me' }).phone).toMatch(/valid phone/)
+  })
 
   it('accepts a valid job', () => {
     expect(validateJob(goodJob)).toEqual({})
@@ -125,5 +136,19 @@ describe('form validation', () => {
 
   it('requires at least one required skill', () => {
     expect(validateJob({ ...goodJob, required_skills: [] }).required_skills).toBe('Add at least one required skill')
+  })
+
+  describe('once the server alias table has loaded', () => {
+    afterEach(() => setSkillAliases({})) // back to the built-in fallback
+
+    it('catches overlaps the small built-in fallback list misses', () => {
+      // "amazon web services" -> "aws" only exists in the server's table
+      // (backend/app/engine/skills.py), not the frontend's fallback list.
+      expect(validateJob(goodJob).preferred_skills).toBeUndefined()
+      setSkillAliases({ 'amazon web services': 'aws' })
+      expect(validateJob({ ...goodJob, required_skills: ['Amazon Web Services'] }).preferred_skills).toBe(
+        'Preferred skills repeat required skills: aws',
+      )
+    })
   })
 })

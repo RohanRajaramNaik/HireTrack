@@ -1,0 +1,60 @@
+[2m[WebServer] [22m
+[2m[WebServer] [22m> hiretrack-frontend@1.0.0 build
+[2m[WebServer] [22m> vite build
+[2m[WebServer] [22m
+[2m[WebServer] [22mReusing the e2e embedding cache
+[2m[WebServer] [22mSeeded: 600 candidates, 33 jobs, 847 applications, 1906 events, 73 staff, 12 projects, 102 allocations
+[2m[WebServer] [22mRunning the first match (encodes every CV once; about 5-20 s with the real model)...
+[2m[WebServer] [22mMatched 600 candidates for 'Cloud Data Engineer' in 7038 ms. Top: Tamryn K. Taylor (91.3)
+[2m[WebServer] [22mDone in 7.9 s
+[2m[WebServer] [22mSign in at http://127.0.0.1:8000 with admin@hiretrack.local / Admin@123
+
+Running 22 tests using 1 worker
+
+[2m[WebServer] [22mWARNING hiretrack.users: Failed sign-in
+  ok 1 01-auth.spec.js:5:3 › Sign-in and role-based access › TC-01 wrong password is rejected with a clear message (1.1s)
+  ok 2 01-auth.spec.js:14:3 › Sign-in and role-based access › TC-02 each role signs in and sees only its menu items (3.0s)
+[2m[WebServer] [22mWARNING hiretrack.security: Denied user id=2 role=recruiter (needs admin)
+  ok 3 01-auth.spec.js:29:3 › Sign-in and role-based access › TC-03 a recruiter opening the Admin URL directly is refused (963ms)
+  ok 4 01-auth.spec.js:41:3 › Sign-in and role-based access › TC-04 signing out ends the session (1.2s)
+  ok 5 02-candidates.spec.js:11:3 › Candidate management › TC-05 invalid candidate data is refused with messages under each field (1.8s)
+  ok 6 02-candidates.spec.js:23:3 › Candidate management › TC-06 add, find, edit and delete a candidate (7.5s)
+  ok 7 02-candidates.spec.js:58:3 › Candidate management › TC-07 a CV file fills in the summary and skills (1.6s)
+  ok 8 02-candidates.spec.js:74:3 › Candidate management › TC-08 bulk import saves valid rows and reports bad rows (2.0s)
+  ok 9 03-jobs-matching.spec.js:6:3 › Job specifications and matching › TC-09 create a job; Run Match stays locked until weights total 100% (1.5s)
+  ok 10 03-jobs-matching.spec.js:34:3 › Job specifications and matching › TC-10 run a match and read the score breakdown (2.8s)
+  ok 11 03-jobs-matching.spec.js:50:3 › Job specifications and matching › TC-11 what-if weights re-rank without saving (1.9s)
+  ok 12 03-jobs-matching.spec.js:60:3 › Job specifications and matching › TC-12 shortlist from results into the pipeline and export CSV (8.0s)
+  x  13 03-jobs-matching.spec.js:90:3 › Job specifications and matching › TC-13 performance: re-running a 600-candidate match takes under 5 seconds (4ms)
+  ok 14 04-pipeline.spec.js:5:3 › Applicant pipeline › TC-14 move an applicant from Applied to Hired with notes; hire joins the staff pool (2.3s)
+  ok 15 04-pipeline.spec.js:50:3 › Applicant pipeline › TC-15 stages cannot be skipped; a rejection can be reopened (1.6s)
+  ok 16 04-pipeline.spec.js:70:3 › Applicant pipeline › TC-16 a resource manager can view the pipeline but not change it (1.5s)
+  ok 17 05-resources.spec.js:17:3 › Resource allocation › TC-17 create a project, allocate staff, and block over-allocation (2.6s)
+  ok 18 05-resources.spec.js:63:3 › Resource allocation › TC-18 project end date before the start date is refused (1.4s)
+  ok 19 05-resources.spec.js:76:3 › Resource allocation › TC-19 the bench filter shows only unallocated staff (1.0s)
+  ok 20 06-admin-dashboard.spec.js:5:3 › Dashboard and administration › TC-20 dashboard shows the key counts and charts (954ms)
+  ok 21 06-admin-dashboard.spec.js:20:3 › Dashboard and administration › TC-21 an administrator creates a user who can then sign in (2.6s)
+[2m[WebServer] [22mWARNING hiretrack.security: Rejected destructive admin action: password not confirmed (user id=1)
+  ok 22 06-admin-dashboard.spec.js:39:3 › Dashboard and administration › TC-22 manual backup, and data reset needs the admin password (2.1s)
+
+
+  1) 03-jobs-matching.spec.js:90:3 › Job specifications and matching › TC-13 performance: re-running a 600-candidate match takes under 5 seconds 
+
+    TargetClosedError: Target page, context or browser has been closed
+
+    attachment #1: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\03-jobs-matching-Job-speci-55913-match-takes-under-5-seconds\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\03-jobs-matching-Job-speci-55913-match-takes-under-5-seconds\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    03-jobs-matching.spec.js:90:3 › Job specifications and matching › TC-13 performance: re-running a 600-candidate match takes under 5 seconds 
+  21 passed (1.2m)
+
+To open last HTML report run:
+
+  npx playwright show-report ..\testing\e2e-report
+

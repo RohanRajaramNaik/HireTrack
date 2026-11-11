@@ -1,0 +1,62 @@
+<testsuites id="" name="" tests="22" failures="0" skipped="0" errors="0" time="68.928216">
+<testsuite name="01-auth.spec.js" timestamp="2026-11-11T10:16:34.229Z" hostname="" tests="4" failures="0" skipped="0" time="6.41" errors="0">
+<testcase name="Sign-in and role-based access › TC-01 wrong password is rejected with a clear message" classname="01-auth.spec.js" time="1.147">
+</testcase>
+<testcase name="Sign-in and role-based access › TC-02 each role signs in and sees only its menu items" classname="01-auth.spec.js" time="3.022">
+</testcase>
+<testcase name="Sign-in and role-based access › TC-03 a recruiter opening the Admin URL directly is refused" classname="01-auth.spec.js" time="0.98">
+</testcase>
+<testcase name="Sign-in and role-based access › TC-04 signing out ends the session" classname="01-auth.spec.js" time="1.261">
+</testcase>
+</testsuite>
+<testsuite name="02-candidates.spec.js" timestamp="2026-11-11T10:16:34.229Z" hostname="" tests="4" failures="0" skipped="0" time="12.75" errors="0">
+<testcase name="Candidate management › TC-05 invalid candidate data is refused with messages under each field" classname="02-candidates.spec.js" time="1.822">
+</testcase>
+<testcase name="Candidate management › TC-06 add, find, edit and delete a candidate" classname="02-candidates.spec.js" time="7.368">
+</testcase>
+<testcase name="Candidate management › TC-07 a CV file fills in the summary and skills" classname="02-candidates.spec.js" time="1.576">
+</testcase>
+<testcase name="Candidate management › TC-08 bulk import saves valid rows and reports bad rows" classname="02-candidates.spec.js" time="1.984">
+</testcase>
+</testsuite>
+<testsuite name="03-jobs-matching.spec.js" timestamp="2026-11-11T10:16:34.229Z" hostname="" tests="5" failures="0" skipped="0" time="11.086" errors="0">
+<testcase name="Job specifications and matching › TC-09 create a job; Run Match stays locked until weights total 100%" classname="03-jobs-matching.spec.js" time="1.478">
+</testcase>
+<testcase name="Job specifications and matching › TC-10 run a match and read the score breakdown" classname="03-jobs-matching.spec.js" time="2.769">
+</testcase>
+<testcase name="Job specifications and matching › TC-11 what-if weights re-rank without saving" classname="03-jobs-matching.spec.js" time="1.897">
+</testcase>
+<testcase name="Job specifications and matching › TC-12 shortlist from results into the pipeline and export CSV" classname="03-jobs-matching.spec.js" time="3.012">
+</testcase>
+<testcase name="Job specifications and matching › TC-13 performance: re-running a 600-candidate match takes under 5 seconds" classname="03-jobs-matching.spec.js" time="1.93">
+<properties>
+<property name="timing" value="600 candidates re-ranked end to end in 0.69 s">
+</property>
+</properties>
+</testcase>
+</testsuite>
+<testsuite name="04-pipeline.spec.js" timestamp="2026-11-11T10:16:34.229Z" hostname="" tests="3" failures="0" skipped="0" time="4.834" errors="0">
+<testcase name="Applicant pipeline › TC-14 move an applicant from Applied to Hired with notes; hire joins the staff pool" classname="04-pipeline.spec.js" time="2.003">
+</testcase>
+<testcase name="Applicant pipeline › TC-15 stages cannot be skipped; a rejection can be reopened" classname="04-pipeline.spec.js" time="1.631">
+</testcase>
+<testcase name="Applicant pipeline › TC-16 a resource manager can view the pipeline but not change it" classname="04-pipeline.spec.js" time="1.2">
+</testcase>
+</testsuite>
+<testsuite name="05-resources.spec.js" timestamp="2026-11-11T10:16:34.229Z" hostname="" tests="3" failures="0" skipped="0" time="4.849" errors="0">
+<testcase name="Resource allocation › TC-17 create a project, allocate staff, and block over-allocation" classname="05-resources.spec.js" time="2.563">
+</testcase>
+<testcase name="Resource allocation › TC-18 project end date before the start date is refused" classname="05-resources.spec.js" time="1.327">
+</testcase>
+<testcase name="Resource allocation › TC-19 the bench filter shows only unallocated staff" classname="05-resources.spec.js" time="0.959">
+</testcase>
+</testsuite>
+<testsuite name="06-admin-dashboard.spec.js" timestamp="2026-11-11T10:16:34.229Z" hostname="" tests="3" failures="0" skipped="0" time="5.813" errors="0">
+<testcase name="Dashboard and administration › TC-20 dashboard shows the key counts and charts" classname="06-admin-dashboard.spec.js" time="0.945">
+</testcase>
+<testcase name="Dashboard and administration › TC-21 an administrator creates a user who can then sign in" classname="06-admin-dashboard.spec.js" time="2.514">
+</testcase>
+<testcase name="Dashboard and administration › TC-22 manual backup, and data reset needs the admin password" classname="06-admin-dashboard.spec.js" time="2.354">
+</testcase>
+</testsuite>
+</testsuites>

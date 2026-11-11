@@ -24,6 +24,8 @@ def to_out(j: JobSpecification, last_run_at=None) -> JobOut:
         job_id=j.job_id,
         job_title=j.job_title,
         created_by=j.created_by,
+        location=j.location,
+        status=j.status,
         min_experience=j.min_experience,
         min_level_id=j.min_level_id,
         min_level_name=j.min_level.level_name,
@@ -72,6 +74,8 @@ def job_out(db: Session, j: JobSpecification) -> JobOut:
 def _apply(j: JobSpecification, data: JobIn) -> None:
     j.job_title = data.job_title
     j.created_by = data.created_by
+    j.location = data.location
+    j.status = data.status
     j.min_experience = data.min_experience
     j.min_level_id = data.min_level_id
     j.job_description = data.job_description

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { api } from '../apiClient'
+import { setSkillAliases } from './validation'
 
 let levelsCache = null
 
@@ -17,6 +18,24 @@ export function useEducationLevels() {
       .catch(() => {})
   }, [])
   return levels
+}
+
+let aliasesFetched = false
+
+/** Loads the server's skill alias table once, so client-side duplicate
+ * checks (TagInput, job validation, candidate search) agree with the
+ * server instead of relying on the small built-in fallback list. */
+export function useSkillAliases() {
+  useEffect(() => {
+    if (aliasesFetched) return
+    aliasesFetched = true
+    api
+      .skillAliases()
+      .then(setSkillAliases)
+      .catch(() => {
+        aliasesFetched = false
+      })
+  }, [])
 }
 
 export function useDebounced(value, ms = 150) {

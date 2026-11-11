@@ -1,0 +1,293 @@
+[2m[WebServer] [22m
+[2m[WebServer] [22m> hiretrack-frontend@1.0.0 build
+[2m[WebServer] [22m> vite build
+[2m[WebServer] [22m
+[2m[WebServer] [22mReusing the e2e embedding cache
+[2m[WebServer] [22mSeeded: 600 candidates, 33 jobs, 847 applications, 1906 events, 73 staff, 12 projects, 102 allocations
+[2m[WebServer] [22mRunning the first match (encodes every CV once; about 5-20 s with the real model)...
+[2m[WebServer] [22mMatched 600 candidates for 'Cloud Data Engineer' in 9497 ms. Top: Tamryn K. Taylor (91.3)
+[2m[WebServer] [22mDone in 10.4 s
+[2m[WebServer] [22mSign in at http://127.0.0.1:8000 with admin@hiretrack.local / Admin@123
+
+Running 22 tests using 1 worker
+
+[2m[WebServer] [22mWARNING hiretrack.users: Failed sign-in
+  ok 1 01-auth.spec.js:5:3 › Sign-in and role-based access › TC-01 wrong password is rejected with a clear message (1.3s)
+  ok 2 01-auth.spec.js:14:3 › Sign-in and role-based access › TC-02 each role signs in and sees only its menu items (2.9s)
+[2m[WebServer] [22mWARNING hiretrack.security: Denied user id=2 role=recruiter (needs admin)
+  ok 3 01-auth.spec.js:29:3 › Sign-in and role-based access › TC-03 a recruiter opening the Admin URL directly is refused (1.0s)
+  ok 4 01-auth.spec.js:41:3 › Sign-in and role-based access › TC-04 signing out ends the session (1.3s)
+  ok 5 02-candidates.spec.js:11:3 › Candidate management › TC-05 invalid candidate data is refused with messages under each field (1.9s)
+  x  6 02-candidates.spec.js:23:3 › Candidate management › TC-06 add, find, edit and delete a candidate (1.0m)
+  x  7 02-candidates.spec.js:58:3 › Candidate management › TC-07 a CV file fills in the summary and skills (11.9s)
+  ok 8 02-candidates.spec.js:74:3 › Candidate management › TC-08 bulk import saves valid rows and reports bad rows (2.3s)
+  x  9 03-jobs-matching.spec.js:5:3 › Job specifications and matching › TC-09 create a job; Run Match stays locked until weights total 100% (1.2s)
+  x  10 03-jobs-matching.spec.js:33:3 › Job specifications and matching › TC-10 run a match and read the score breakdown (11.5s)
+  ok 11 03-jobs-matching.spec.js:49:3 › Job specifications and matching › TC-11 what-if weights re-rank without saving (2.3s)
+  ok 12 03-jobs-matching.spec.js:59:3 › Job specifications and matching › TC-12 shortlist from results into the pipeline and export CSV (8.2s)
+  x  13 03-jobs-matching.spec.js:83:3 › Job specifications and matching › TC-13 performance: re-running a 600-candidate match takes under 5 seconds (5ms)
+  x  14 04-pipeline.spec.js:5:3 › Applicant pipeline › TC-14 move an applicant from Applied to Hired with notes; hire joins the staff pool (2.8s)
+  ok 15 04-pipeline.spec.js:48:3 › Applicant pipeline › TC-15 stages cannot be skipped; a rejection can be reopened (1.8s)
+  ok 16 04-pipeline.spec.js:68:3 › Applicant pipeline › TC-16 a resource manager can view the pipeline but not change it (1.2s)
+  x  17 05-resources.spec.js:11:3 › Resource allocation › TC-17 create a project, allocate staff, and block over-allocation (2.0s)
+  ok 18 05-resources.spec.js:56:3 › Resource allocation › TC-18 project end date before the start date is refused (1.6s)
+  ok 19 05-resources.spec.js:69:3 › Resource allocation › TC-19 the bench filter shows only unallocated staff (1.0s)
+  x  20 06-admin-dashboard.spec.js:5:3 › Dashboard and administration › TC-20 dashboard shows the key counts and charts (1.0m)
+  ok 21 06-admin-dashboard.spec.js:20:3 › Dashboard and administration › TC-21 an administrator creates a user who can then sign in (2.9s)
+[2m[WebServer] [22mWARNING hiretrack.security: Rejected destructive admin action: password not confirmed (user id=1)
+  ok 22 06-admin-dashboard.spec.js:39:3 › Dashboard and administration › TC-22 manual backup, and data reset needs the admin password (2.1s)
+
+
+  1) 02-candidates.spec.js:23:3 › Candidate management › TC-06 add, find, edit and delete a candidate 
+
+    [31mTest timeout of 60000ms exceeded.[39m
+
+    Error: locator.fill: Test timeout of 60000ms exceeded.
+    Call log:
+    [2m  - waiting for getByRole('dialog').getByRole('combobox', { name: 'Skills' }).or(getByRole('dialog').getByLabel('Skills')).first()[22m
+    [2m    - locator resolved to <ul class="contents" aria-label="Skills added"></ul>[22m
+    [2m    - fill("Python")[22m
+    [2m  - attempting fill action[22m
+    [2m    2 × waiting for element to be visible, enabled and editable[22m
+    [2m      - element is not visible[22m
+    [2m    - retrying fill action[22m
+    [2m    - waiting 20ms[22m
+    [2m    2 × waiting for element to be visible, enabled and editable[22m
+    [2m      - element is not visible[22m
+    [2m    - retrying fill action[22m
+    [2m      - waiting 100ms[22m
+    [2m    115 × waiting for element to be visible, enabled and editable[22m
+    [2m        - element is not visible[22m
+    [2m      - retrying fill action[22m
+    [2m        - waiting 500ms[22m
+
+
+      30 |     await panel.getByLabel('Highest education').selectOption({ label: "Bachelor's Degree" })
+      31 |     const skills = panel.getByRole('combobox', { name: 'Skills' }).or(panel.getByLabel('Skills'))
+    > 32 |     await skills.first().fill('Python')
+         |                          ^
+      33 |     await skills.first().press('Enter')
+      34 |     await skills.first().fill('K8s')
+      35 |     await skills.first().press('Enter')
+        at C:\Users\rohan\hiretrack-matching-engine\frontend\e2e\tests\02-candidates.spec.js:32:26
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\02-candidates-Candidate-ma-47547-edit-and-delete-a-candidate\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\02-candidates-Candidate-ma-47547-edit-and-delete-a-candidate\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\02-candidates-Candidate-ma-47547-edit-and-delete-a-candidate\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) 02-candidates.spec.js:58:3 › Candidate management › TC-07 a CV file fills in the summary and skills 
+
+    Error: [31mTimed out 10000ms waiting for [39m[2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m()[22m
+
+    Locator: getByRole('dialog').getByText('Airflow', { exact: true })
+    Expected: visible
+    Received: <element(s) not found>
+    Call log:
+    [2m  - expect.toBeVisible with timeout 10000ms[22m
+    [2m  - waiting for getByRole('dialog').getByText('Airflow', { exact: true })[22m
+
+
+      69 |     await expect(panel.getByLabel('Full name')).toHaveValue('Mpho Radebe')
+      70 |     await expect(panel.getByLabel('Resume summary')).toHaveValue(/Airflow pipelines/)
+    > 71 |     await expect(panel.getByText('Airflow', { exact: true })).toBeVisible()
+         |                                                               ^
+      72 |   })
+      73 |
+      74 |   test('TC-08 bulk import saves valid rows and reports bad rows', async ({ page }) => {
+        at C:\Users\rohan\hiretrack-matching-engine\frontend\e2e\tests\02-candidates.spec.js:71:63
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\02-candidates-Candidate-ma-21416-s-in-the-summary-and-skills\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\02-candidates-Candidate-ma-21416-s-in-the-summary-and-skills\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\02-candidates-Candidate-ma-21416-s-in-the-summary-and-skills\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) 03-jobs-matching.spec.js:5:3 › Job specifications and matching › TC-09 create a job; Run Match stays locked until weights total 100% 
+
+    Error: locator.fill: Error: strict mode violation: getByLabel('Required skills') resolved to 2 elements:
+        1) <ul class="contents" aria-label="Required skills added"></ul> aka getByLabel('Required skills added')
+        2) <input value="" id=":r8:" aria-describedby=":r8:-hint" placeholder="Type a skill and press Enter" class="h-7 min-w-[8rem] flex-1 bg-transparent px-1.5 text-base text-ink placeholder:text-faint focus:outline-none"/> aka getByLabel('Required skills', { exact: true })
+
+    Call log:
+    [2m  - waiting for getByLabel('Required skills')[22m
+
+
+      12 |     const req = page.getByLabel('Required skills')
+      13 |     for (const s of ['Python', 'Django', 'SQL']) {
+    > 14 |       await req.fill(s)
+         |                 ^
+      15 |       await req.press('Enter')
+      16 |     }
+      17 |     await page
+        at C:\Users\rohan\hiretrack-matching-engine\frontend\e2e\tests\03-jobs-matching.spec.js:14:17
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\03-jobs-matching-Job-speci-1b6ff-ed-until-weights-total-100-\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\03-jobs-matching-Job-speci-1b6ff-ed-until-weights-total-100-\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\03-jobs-matching-Job-speci-1b6ff-ed-until-weights-total-100-\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4) 03-jobs-matching.spec.js:33:3 › Job specifications and matching › TC-10 run a match and read the score breakdown 
+
+    Error: [31mTimed out 10000ms waiting for [39m[2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m()[22m
+
+    Locator: getByText(/600 candidates ranked in/)
+    Expected: visible
+    Received: <element(s) not found>
+    Call log:
+    [2m  - expect.toBeVisible with timeout 10000ms[22m
+    [2m  - waiting for getByText(/600 candidates ranked in/)[22m
+
+
+      37 |     await page.getByTestId('run-match').click()
+      38 |     await expect(page.getByRole('heading', { name: 'Cloud Data Engineer' })).toBeVisible({ timeout: 45_000 })
+    > 39 |     await expect(page.getByText(/600 candidates ranked in/)).toBeVisible()
+         |                                                              ^
+      40 |     const rows = page.locator('ol[aria-label="Ranked candidates"] > li')
+      41 |     await expect(rows).toHaveCount(50)
+      42 |     await rows.first().locator('button[aria-label^="Open breakdown"]').click()
+        at C:\Users\rohan\hiretrack-matching-engine\frontend\e2e\tests\03-jobs-matching.spec.js:39:62
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\03-jobs-matching-Job-speci-cc310-nd-read-the-score-breakdown\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\03-jobs-matching-Job-speci-cc310-nd-read-the-score-breakdown\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\03-jobs-matching-Job-speci-cc310-nd-read-the-score-breakdown\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  5) 03-jobs-matching.spec.js:83:3 › Job specifications and matching › TC-13 performance: re-running a 600-candidate match takes under 5 seconds 
+
+    TargetClosedError: Target page, context or browser has been closed
+
+    attachment #1: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\03-jobs-matching-Job-speci-55913-match-takes-under-5-seconds\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\03-jobs-matching-Job-speci-55913-match-takes-under-5-seconds\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  6) 04-pipeline.spec.js:5:3 › Applicant pipeline › TC-14 move an applicant from Applied to Hired with notes; hire joins the staff pool 
+
+    Error: expect.toBeVisible: Error: strict mode violation: getByRole('cell', { name: 'Cloud Engineer' }) resolved to 4 elements:
+        1) <td class="px-4 py-2.5 text-sm text-muted">Cloud Engineer</td> aka getByRole('cell', { name: 'Cloud Engineer' }).first()
+        2) <td class="px-4 py-2.5 text-sm text-muted">Cloud Engineer</td> aka getByRole('cell', { name: 'Cloud Engineer' }).nth(1)
+        3) <td class="px-4 py-2.5 text-sm text-muted">Cloud Engineer</td> aka getByRole('cell', { name: 'Cloud Engineer' }).nth(2)
+        4) <td class="px-4 py-2.5 text-sm text-muted">Cloud Engineer</td> aka getByRole('cell', { name: 'Cloud Engineer' }).nth(3)
+
+    Call log:
+    [2m  - expect.toBeVisible with timeout 10000ms[22m
+    [2m  - waiting for getByRole('cell', { name: 'Cloud Engineer' })[22m
+
+
+      42 |     await page.goto('/resources')
+      43 |     await page.getByLabel('Search staff').fill(name)
+    > 44 |     await expect(page.getByRole('cell', { name: 'Cloud Engineer' })).toBeVisible()
+         |                                                                      ^
+      45 |     await expect(page.getByRole('cell', { name: 'Hired' })).toBeVisible()
+      46 |   })
+      47 |
+        at C:\Users\rohan\hiretrack-matching-engine\frontend\e2e\tests\04-pipeline.spec.js:44:70
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\04-pipeline-Applicant-pipe-fad78-s-hire-joins-the-staff-pool\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\04-pipeline-Applicant-pipe-fad78-s-hire-joins-the-staff-pool\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\04-pipeline-Applicant-pipe-fad78-s-hire-joins-the-staff-pool\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  7) 05-resources.spec.js:11:3 › Resource allocation › TC-17 create a project, allocate staff, and block over-allocation 
+
+    Error: locator.selectOption: options[0].label: expected string, got object
+
+      35 |
+      36 |     const form = panel.getByTestId('allocation-form')
+    > 37 |     await form.getByLabel('Staff member').selectOption({ label: new RegExp(`^${person}`) })
+         |                                           ^
+      38 |     await form.getByLabel('Allocation %').fill('70')
+      39 |     await form.getByRole('button', { name: 'Save allocation' }).click()
+      40 |     await toast(page, 'Allocation saved')
+        at C:\Users\rohan\hiretrack-matching-engine\frontend\e2e\tests\05-resources.spec.js:37:43
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\05-resources-Resource-allo-c5ea9-f-and-block-over-allocation\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\05-resources-Resource-allo-c5ea9-f-and-block-over-allocation\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\05-resources-Resource-allo-c5ea9-f-and-block-over-allocation\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  8) 06-admin-dashboard.spec.js:5:3 › Dashboard and administration › TC-20 dashboard shows the key counts and charts 
+
+    [31mTest timeout of 60000ms exceeded.[39m
+
+    Error: locator.click: Test timeout of 60000ms exceeded.
+    Call log:
+    [2m  - waiting for getByRole('button', { name: /Bench \(0%\)/ })[22m
+
+
+      14 |     }
+      15 |     // Selecting a utilisation band opens the filtered staff list.
+    > 16 |     await page.getByRole('button', { name: /Bench \(0%\)/ }).click()
+         |                                                              ^
+      17 |     await expect(page).toHaveURL(/\/resources\?band=bench/)
+      18 |   })
+      19 |
+        at C:\Users\rohan\hiretrack-matching-engine\frontend\e2e\tests\06-admin-dashboard.spec.js:16:62
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\06-admin-dashboard-Dashboa-00c31-s-the-key-counts-and-charts\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\06-admin-dashboard-Dashboa-00c31-s-the-key-counts-and-charts\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\06-admin-dashboard-Dashboa-00c31-s-the-key-counts-and-charts\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  8 failed
+    02-candidates.spec.js:23:3 › Candidate management › TC-06 add, find, edit and delete a candidate 
+    02-candidates.spec.js:58:3 › Candidate management › TC-07 a CV file fills in the summary and skills 
+    03-jobs-matching.spec.js:5:3 › Job specifications and matching › TC-09 create a job; Run Match stays locked until weights total 100% 
+    03-jobs-matching.spec.js:33:3 › Job specifications and matching › TC-10 run a match and read the score breakdown 
+    03-jobs-matching.spec.js:83:3 › Job specifications and matching › TC-13 performance: re-running a 600-candidate match takes under 5 seconds 
+    04-pipeline.spec.js:5:3 › Applicant pipeline › TC-14 move an applicant from Applied to Hired with notes; hire joins the staff pool 
+    05-resources.spec.js:11:3 › Resource allocation › TC-17 create a project, allocate staff, and block over-allocation 
+    06-admin-dashboard.spec.js:5:3 › Dashboard and administration › TC-20 dashboard shows the key counts and charts 
+  14 passed (4.1m)

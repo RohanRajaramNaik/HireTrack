@@ -40,6 +40,8 @@ def to_out(c: Candidate) -> CandidateOut:
         candidate_id=c.candidate_id,
         full_name=c.full_name,
         email=c.email,
+        phone=c.phone,
+        location=c.location,
         years_experience=c.years_experience,
         level_id=c.level_id,
         level_name=c.level.level_name,
@@ -80,6 +82,7 @@ def list_candidates(
             func.lower(Candidate.full_name).like(term),
             func.lower(func.coalesce(Candidate.previous_titles, "")).like(term),
             func.lower(func.coalesce(Candidate.email, "")).like(term),
+            func.lower(func.coalesce(Candidate.location, "")).like(term),
             skill_match,
         )
         q, count_q = q.where(cond), count_q.where(cond)
@@ -101,6 +104,8 @@ def create_candidate(db: Session, data: CandidateIn) -> Candidate:
     c = Candidate(
         full_name=data.full_name,
         email=data.email,
+        phone=data.phone,
+        location=data.location,
         years_experience=data.years_experience,
         level_id=data.level_id,
         previous_titles=data.previous_titles or None,
@@ -118,6 +123,8 @@ def update_candidate(db: Session, candidate_id: int, data: CandidateIn) -> Candi
     c = get_candidate(db, candidate_id)
     c.full_name = data.full_name
     c.email = data.email
+    c.phone = data.phone
+    c.location = data.location
     c.years_experience = data.years_experience
     c.level_id = data.level_id
     c.previous_titles = data.previous_titles or None

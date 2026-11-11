@@ -2,9 +2,12 @@
 // see the same message inline before anything is sent.
 import { weightTotal } from './scoring'
 
-// Common aliases (the full list lives in backend/app/engine/skills.py; the
-// server is the source of truth, this only catches obvious repeats early).
-const ALIASES = {
+// Small built-in fallback, used until the real table arrives from the server
+// (see setSkillAliases below) or if that fetch never completes. The server's
+// backend/app/engine/skills.py table is the source of truth and is much
+// larger; without it, two different spellings of the same skill can look
+// fine client-side and still be rejected as duplicates when the job is saved.
+const FALLBACK_ALIASES = {
   js: 'javascript',
   ts: 'typescript',
   py: 'python',
@@ -17,12 +20,20 @@ const ALIASES = {
   golang: 'go',
 }
 
+let ALIASES = FALLBACK_ALIASES
+
+/** Replace the alias table with the one fetched from GET /api/skill-aliases. */
+export function setSkillAliases(aliases) {
+  ALIASES = { ...FALLBACK_ALIASES, ...aliases }
+}
+
 export function normaliseSkill(s) {
   const c = String(s).trim().toLowerCase().replace(/\s+/g, ' ')
   return ALIASES[c] || c
 }
 
 const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/
+const PHONE_RE = /^\+?[0-9 ()-]{7,20}$/
 
 function numberError(value, label, min = 0, max = 50) {
   if (value === '' || value === null || value === undefined) return `${label} is required`
@@ -46,6 +57,7 @@ export function validateCandidate(v) {
   const name = textError(v.full_name, 'Full name', 2, 100)
   if (name) e.full_name = name
   if (v.email && !EMAIL_RE.test(v.email.trim())) e.email = 'Enter a valid email address, or leave it blank'
+  if (v.phone && !PHONE_RE.test(v.phone.trim())) e.phone = 'Enter a valid phone number (digits, spaces, +, - and brackets only)'
   const yrs = numberError(v.years_experience, 'Years of experience')
   if (yrs) e.years_experience = yrs
   if (!v.level_id) e.level_id = 'Choose an education level'
@@ -59,6 +71,8 @@ export function validateJob(v) {
   const e = {}
   const title = textError(v.job_title, 'Job title', 2, 100)
   if (title) e.job_title = title
+  const loc = textError(v.location, 'Location', 2, 80)
+  if (loc) e.location = loc
   const exp = numberError(v.min_experience, 'Minimum experience')
   if (exp) e.min_experience = exp
   if (!v.min_level_id) e.min_level_id = 'Choose a minimum education level'

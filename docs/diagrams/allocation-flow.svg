@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="270" viewBox="0 0 1240 270" font-family="Segoe UI, Inter, Arial, sans-serif">
+<rect width="1240" height="270" fill="#ffffff"/>
+<defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker></defs>
+<text x="40" y="40" font-size="20" font-weight="700" fill="#0f172a" text-anchor="start">Allocation check: can this person take on more work for these dates?</text>
+<rect x="40" y="80" width="212" height="100" rx="8" fill="#ffffff" stroke="#94a3b8" stroke-width="1.6"/>
+<text x="54" y="108" font-size="15" font-weight="700" fill="#0f172a" text-anchor="start">1. Request</text>
+<text x="54" y="136" font-size="13" font-weight="400" fill="#475569" text-anchor="start">staff, project, %,</text>
+<text x="54" y="156" font-size="13" font-weight="400" fill="#475569" text-anchor="start">start and end date</text>
+<polyline points="254,130 274,130" fill="none" stroke="#475569" stroke-width="1.6" marker-end="url(#arr)"/>
+<rect x="276" y="80" width="212" height="100" rx="8" fill="#ffffff" stroke="#94a3b8" stroke-width="1.6"/>
+<text x="290" y="108" font-size="15" font-weight="700" fill="#0f172a" text-anchor="start">2. Basic rules</text>
+<text x="290" y="136" font-size="13" font-weight="400" fill="#475569" text-anchor="start">1-100%, end &gt;= start,</text>
+<text x="290" y="156" font-size="13" font-weight="400" fill="#475569" text-anchor="start">dates inside project</text>
+<polyline points="490,130 510,130" fill="none" stroke="#475569" stroke-width="1.6" marker-end="url(#arr)"/>
+<rect x="512" y="80" width="212" height="100" rx="8" fill="#ffffff" stroke="#94a3b8" stroke-width="1.6"/>
+<text x="526" y="108" font-size="15" font-weight="700" fill="#0f172a" text-anchor="start">3. Collect bookings</text>
+<text x="526" y="136" font-size="13" font-weight="400" fill="#475569" text-anchor="start">this person's allocations on</text>
+<text x="526" y="156" font-size="13" font-weight="400" fill="#475569" text-anchor="start">planned / active projects</text>
+<polyline points="726,130 746,130" fill="none" stroke="#475569" stroke-width="1.6" marker-end="url(#arr)"/>
+<rect x="748" y="80" width="212" height="100" rx="8" fill="#ffffff" stroke="#94a3b8" stroke-width="1.6"/>
+<text x="762" y="108" font-size="15" font-weight="700" fill="#0f172a" text-anchor="start">4. Peak load</text>
+<text x="762" y="136" font-size="13" font-weight="400" fill="#475569" text-anchor="start">check each day the load can</text>
+<text x="762" y="156" font-size="13" font-weight="400" fill="#475569" text-anchor="start">change (sweep), add new %</text>
+<polyline points="962,130 982,130" fill="none" stroke="#475569" stroke-width="1.6" marker-end="url(#arr)"/>
+<rect x="984" y="80" width="212" height="100" rx="8" fill="#ffffff" stroke="#1d3fbf" stroke-width="1.6"/>
+<text x="998" y="108" font-size="15" font-weight="700" fill="#1d3fbf" text-anchor="start">5. Decision</text>
+<text x="998" y="136" font-size="13" font-weight="400" fill="#475569" text-anchor="start">peak &lt;= 100%: save</text>
+<text x="998" y="156" font-size="13" font-weight="400" fill="#475569" text-anchor="start">peak &gt; 100%: refuse + reason</text>
+<text x="40" y="224" font-size="13" font-weight="400" fill="#0f172a" text-anchor="start">Example: already 70% on Claims Portal for March to May; a new 50% booking in April would peak at 120%.</text>
+<text x="40" y="246" font-size="13" font-weight="400" fill="#475569" text-anchor="start">Message shown: 'This would book the person at 120% on 01 Apr 2026 (already 70% allocated). The most you can add for these dates is 30%.'</text>
+</svg>

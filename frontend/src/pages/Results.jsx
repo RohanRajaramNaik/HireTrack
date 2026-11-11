@@ -13,6 +13,7 @@ import {
   Trophy,
   X,
   Zap,
+  UserPlus,
 } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
@@ -25,7 +26,8 @@ import Tour from '../components/Tour'
 import { useToast } from '../components/Toast'
 import WeightSliders from '../components/WeightSliders'
 import { EmptyState, Skeleton, Spinner } from '../components/ui'
-import { duration, skillLabel, timeAgo, years } from '../lib/format'
+import { duration, plural, skillLabel, timeAgo, years } from '../lib/format'
+import { STAGE_LABELS } from '../lib/stages'
 import { demoState } from '../lib/hooks'
 import { METRICS, calculation, rerank, sameWeights, weightsOf } from '../lib/scoring'
 
@@ -242,7 +244,14 @@ function ResultRow({ row, baseRank, entranceDelay, explain, selected, onOpen, ch
           )}
         </div>
         <button type="button" onClick={onOpen} className="min-w-0 text-left after:absolute after:inset-0 after:content-['']" aria-label={`Open breakdown for ${row.full_name}, rank ${row.rank}, overall ${row.overall_score.toFixed(1)}`}>
-          <span className="block truncate text-md font-semibold text-ink">{row.full_name}</span>
+          <span className="flex min-w-0 items-center gap-2">
+            <span className="truncate text-md font-semibold text-ink">{row.full_name}</span>
+            {row.pipeline_stage && (
+              <span className="chip h-5 shrink-0 px-1.5 text-2xs text-muted" title="Already in the pipeline for this job">
+                {STAGE_LABELS[row.pipeline_stage]}
+              </span>
+            )}
+          </span>
           <span className="block truncate text-sm text-faint">{row.previous_titles || `${years(row.years_experience)} · ${row.level_name}`}</span>
         </button>
         <div className="text-right">
@@ -352,6 +361,28 @@ export default function Results() {
       toast.error('Match could not run', e.detail)
     } finally {
       setRunning(false)
+    }
+  }
+
+  // Add one or more ranked candidates to this job's pipeline (stage: Applied).
+  const [adding, setAdding] = useState(false)
+  const addToPipeline = async (ids) => {
+    setAdding(true)
+    try {
+      const r = await api.addShortlist(id, ids)
+      setData((d) => ({
+        ...d,
+        results: d.results.map((x) => (ids.includes(x.candidate_id) && !x.pipeline_stage ? { ...x, pipeline_stage: 'applied' } : x)),
+      }))
+      toast.success(
+        r.added ? `${plural(r.added, 'candidate')} added to the pipeline` : 'Already in the pipeline',
+        r.skipped && r.added ? `${r.skipped} were already there.` : undefined,
+      )
+      setCompareIds([])
+    } catch (e) {
+      toast.error('Could not add to the pipeline', e.detail)
+    } finally {
+      setAdding(false)
     }
   }
 
@@ -492,9 +523,13 @@ export default function Results() {
             <SlidersHorizontal size={15} aria-hidden /> What if
           </button>
           {run && (
-            <a className="btn-secondary" href={api.csvUrl(id)} download>
+            <button
+              type="button"
+              className="btn-secondary"
+              onClick={() => api.downloadCsv(id).catch((e) => toast.error('Export failed', e.detail))}
+            >
               <Download size={15} aria-hidden /> Export CSV
-            </a>
+            </button>
           )}
           <button type="button" className="btn-go" onClick={rerun} disabled={!id || running}>
             {running ? <Spinner /> : <Zap size={15} aria-hidden />}
@@ -650,6 +685,15 @@ export default function Results() {
             <button type="button" className="btn-ghost btn-sm" onClick={() => setCompareIds([])}>
               Clear
             </button>
+            <button
+              type="button"
+              className="btn-secondary btn-sm"
+              disabled={adding || job?.status === 'closed'}
+              onClick={() => addToPipeline(compareIds)}
+              title={job?.status === 'closed' ? 'This job is closed' : undefined}
+            >
+              {adding ? <Spinner /> : <UserPlus size={14} aria-hidden />} Add to pipeline
+            </button>
             <button type="button" className="btn-primary btn-sm" disabled={compareIds.length < 2} onClick={() => setCompareOpen(true)}>
               <Columns3 size={14} aria-hidden /> Compare {compareIds.length >= 2 ? compareIds.length : ''} head to head
             </button>
@@ -664,6 +708,27 @@ export default function Results() {
         subtitle={selected ? `Rank #${selected.rank} · ${selected.previous_titles || selected.level_name}` : ''}
         width="w-[36rem]"
         tourId="breakdown"
+        footer={
+          selected &&
+          (selected.pipeline_stage ? (
+            <p className="text-sm text-muted">
+              In the pipeline at <span className="font-medium text-ink">{STAGE_LABELS[selected.pipeline_stage]}</span>.{' '}
+              <Link className="text-accent hover:underline" to={`/pipeline/${id}`}>
+                Open pipeline
+              </Link>
+            </p>
+          ) : (
+            <button
+              type="button"
+              className="btn-primary"
+              disabled={adding || job?.status === 'closed'}
+              onClick={() => addToPipeline([selected.candidate_id])}
+            >
+              {adding ? <Spinner /> : <UserPlus size={15} aria-hidden />}
+              {job?.status === 'closed' ? 'Job closed' : 'Add to pipeline'}
+            </button>
+          ))
+        }
       >
         <Breakdown row={selected} weights={weights || {}} usingWhatIf={usingWhatIf} jobTitle={job?.job_title} />
       </SlideOver>

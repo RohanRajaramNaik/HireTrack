@@ -124,6 +124,19 @@ def latest_run(db: Session, job_id: int) -> MatchRun | None:
     return db.scalar(select(MatchRun).where(MatchRun.job_id == job_id).order_by(MatchRun.run_at.desc()).limit(1))
 
 
+def latest_scores(db: Session, job_id: int) -> dict[int, float]:
+    """{candidate_id: overall score} from the latest run for a job (empty if never run)."""
+    run = latest_run(db, job_id)
+    if run is None:
+        return {}
+    rows = db.execute(
+        select(MatchResult.candidate_id, MatchResult.overall_score).where(
+            MatchResult.job_id == job_id, MatchResult.run_at == run.run_at
+        )
+    ).all()
+    return {cid: score for cid, score in rows}
+
+
 def get_results(db: Session, job_id: int) -> ResultsOut:
     job = get_job(db, job_id)
     run = latest_run(db, job_id)
@@ -135,6 +148,11 @@ def get_results(db: Session, job_id: int) -> ResultsOut:
         .where(MatchResult.job_id == job_id, MatchResult.run_at == run.run_at)
         .order_by(MatchResult.rank)
     ).all()
+    from ..models import Application
+
+    stages = dict(
+        db.execute(select(Application.candidate_id, Application.stage).where(Application.job_id == job_id)).all()
+    )
     out: list[ResultRow] = []
     for r in rows:
         c = r.candidate
@@ -148,6 +166,8 @@ def get_results(db: Session, job_id: int) -> ResultsOut:
                 previous_titles=c.previous_titles,
                 years_experience=c.years_experience,
                 level_name=c.level.level_name,
+                location=c.location,
+                pipeline_stage=stages.get(r.candidate_id),
                 skills_score=r.skills_score,
                 experience_score=r.experience_score,
                 education_score=r.education_score,

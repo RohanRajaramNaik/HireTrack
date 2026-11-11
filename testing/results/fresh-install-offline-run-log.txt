@@ -1,0 +1,30 @@
+﻿python.exe : INFO:     Started server process [11856]
+At line:5 char:1
++ & "$sc\.venv\Scripts\python.exe" -m uvicorn app.main:app --host 127.0 ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (INFO:     Started server process [11856]:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+INFO:     Waiting for application startup.
+INFO hiretrack: HireTrack started on 127.0.0.1:8000
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8002 (Press CTRL+C to quit)
+INFO:     127.0.0.1:60352 - "GET /api/health HTTP/1.1" 200 OK
+INFO hiretrack.users: User id=2 signed in
+INFO:     127.0.0.1:60353 - "POST /api/auth/login HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60354 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60355 - "GET /api/jobs HTTP/1.1" 200 OK
+
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 103/103 [00:00<00:00, 2744.63it/s]
+INFO hiretrack.embeddings: Loaded sentence-transformers model from C:\Users\rohan\AppData\Local\Temp\ht-fresh\402311822
+_HireTrack_Phase5_Implementation\source_code\models\all-MiniLM-L6-v2
+INFO hiretrack.embeddings: Loaded 601 cached embeddings from disk
+INFO hiretrack.embeddings: Saved 602 embeddings to disk cache
+INFO hiretrack.seed: Embedding cache warm: 600 texts in 9.3s
+INFO hiretrack.match: Match run job id=2 candidates=600 duration_ms=7011
+INFO:     127.0.0.1:60356 - "POST /api/jobs/2/match HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60357 - "GET /api/dashboard HTTP/1.1" 200 OK
+INFO hiretrack.users: User id=1 signed in
+INFO:     127.0.0.1:60358 - "POST /api/auth/login HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60359 - "GET /api/stats HTTP/1.1" 200 OK

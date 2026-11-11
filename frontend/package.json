@@ -8,7 +8,10 @@
     "build": "vite build",
     "preview": "vite preview",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:e2e": "playwright test",
+    "screenshots": "node e2e/review.mjs ../docs/screenshots"
   },
   "dependencies": {
     "@fontsource-variable/inter": "5.1.0",
@@ -17,14 +20,16 @@
     "lucide-react": "0.460.0",
     "react": "18.3.1",
     "react-dom": "18.3.1",
-    "react-router-dom": "6.28.0"
+    "react-router-dom": "6.30.6"
   },
   "devDependencies": {
+    "@playwright/test": "1.49.0",
     "@testing-library/dom": "10.4.0",
     "@testing-library/jest-dom": "6.6.3",
     "@testing-library/react": "16.0.1",
     "@testing-library/user-event": "14.5.2",
     "@vitejs/plugin-react": "4.3.4",
+    "@vitest/coverage-v8": "2.1.5",
     "autoprefixer": "10.4.20",
     "jsdom": "25.0.1",
     "playwright-core": "1.49.0",

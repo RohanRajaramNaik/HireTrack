@@ -1,20 +1,21 @@
 import { useVirtualizer } from '@tanstack/react-virtual'
-import { ArrowDown, ArrowUp, ChevronsUpDown, Pencil, Plus, Search, Trash2, Users, X } from 'lucide-react'
+import { ArrowDown, ArrowUp, ChevronsUpDown, Eye, FileUp, Pencil, Plus, Search, Trash2, Upload, Users, X } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
 import { api } from '../apiClient'
 import { ConfirmDialog, SlideOver } from '../components/Overlay'
 import TagInput from '../components/TagInput'
 import { useToast } from '../components/Toast'
 import { EmptyState, Field, PageHeader, Skeleton, Spinner } from '../components/ui'
-import { years } from '../lib/format'
+import { useAuth } from '../lib/auth'
+import { skillLabel, years } from '../lib/format'
 import { useDebounced, useEducationLevels } from '../lib/hooks'
 import { normaliseSkill, validateCandidate } from '../lib/validation'
+import ImportPanel from './ImportPanel'
 
 const ROW_H = 60
 const COLS = 'grid grid-cols-[minmax(12rem,1.3fr)_minmax(10rem,1fr)_minmax(14rem,1.6fr)_6rem_10rem_3rem] items-center gap-4'
 
-const EMPTY = { full_name: '', email: '', years_experience: '', level_id: '', previous_titles: '', resume_summary: '', skills: [] }
+const EMPTY = { full_name: '', email: '', phone: '', location: '', years_experience: '', level_id: '', previous_titles: '', resume_summary: '', skills: [] }
 
 const SORTS = {
   name: (a, b) => a.full_name.localeCompare(b.full_name),
@@ -39,13 +40,50 @@ function SortHeader({ id, label, sort, setSort, className = '' }) {
   )
 }
 
-function CandidateForm({ initial, levels, onSaved, onClose, onDelete }) {
+function CandidateForm({ initial, levels, onSaved, onClose, onDelete, readOnly }) {
   const [v, setV] = useState(initial)
   const [errors, setErrors] = useState({})
   const [submitted, setSubmitted] = useState(false)
   const [saving, setSaving] = useState(false)
   const toast = useToast()
   const editing = Boolean(initial.candidate_id)
+  const fileRef = useRef(null)
+  const [parsing, setParsing] = useState(false)
+  const [cvNote, setCvNote] = useState(null)
+
+  // Read a CV file on the server and pre-fill empty fields. Nothing is saved yet.
+  const fillFromCv = async (file) => {
+    if (!file) return
+    setParsing(true)
+    try {
+      const cv = await api.parseCv(file)
+      const skills = [...v.skills]
+      const have = new Set(skills.map(normaliseSkill))
+      cv.skills.forEach((s) => {
+        // The server returns canonical lowercase names; show them as people write them.
+        if (!have.has(normaliseSkill(s))) skills.push(skillLabel(s))
+      })
+      const next = {
+        ...v,
+        full_name: v.full_name || cv.full_name || '',
+        email: v.email || cv.email || '',
+        phone: v.phone || cv.phone || '',
+        resume_summary: cv.resume_summary,
+        skills,
+      }
+      setV(next)
+      if (submitted) setErrors(validateCandidate(next))
+      const n = cv.skills.length
+      setCvNote(
+        `Read ${file.name}: summary${cv.truncated ? ' (shortened to 3,000 characters)' : ''} and ${n} skill${n === 1 ? '' : 's'} filled in. Check them before saving.`,
+      )
+    } catch (err) {
+      toast.error('Could not read this CV', err.detail)
+    } finally {
+      setParsing(false)
+      if (fileRef.current) fileRef.current.value = ''
+    }
+  }
 
   const set = (k) => (e) => {
     const next = { ...v, [k]: e && e.target ? e.target.value : e }
@@ -66,6 +104,8 @@ function CandidateForm({ initial, levels, onSaved, onClose, onDelete }) {
     const body = {
       full_name: v.full_name.trim(),
       email: v.email.trim() || null,
+      phone: v.phone.trim() || null,
+      location: v.location.trim() || null,
       years_experience: Number(v.years_experience),
       level_id: Number(v.level_id),
       previous_titles: v.previous_titles.trim() || null,
@@ -86,6 +126,30 @@ function CandidateForm({ initial, levels, onSaved, onClose, onDelete }) {
 
   return (
     <form id="candidate-form" onSubmit={submit} noValidate className="space-y-5">
+      {!readOnly && (
+        <div className="rounded-lg border border-dashed border-line-strong bg-canvas px-4 py-3">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <p className="text-sm text-muted">Have a CV? Fill the form from a PDF, Word or text file.</p>
+            <button type="button" className="btn-secondary btn-sm" onClick={() => fileRef.current?.click()} disabled={parsing}>
+              {parsing ? <Spinner /> : <FileUp size={14} aria-hidden />} Fill from CV
+            </button>
+            <input
+              ref={fileRef}
+              type="file"
+              accept=".pdf,.docx,.txt"
+              className="hidden"
+              data-testid="cv-file"
+              onChange={(e) => fillFromCv(e.target.files?.[0])}
+            />
+          </div>
+          {cvNote && (
+            <p className="mt-2 text-sm text-ink" role="status">
+              {cvNote}
+            </p>
+          )}
+        </div>
+      )}
+      <fieldset disabled={readOnly} className="space-y-5">
       <Field label="Full name" error={errors.full_name}>
         {({ id, invalid, describedBy }) => (
           <input id={id} className="input" value={v.full_name} onChange={set('full_name')} aria-invalid={invalid} aria-describedby={describedBy} maxLength={120} autoComplete="off" />
@@ -96,6 +160,18 @@ function CandidateForm({ initial, levels, onSaved, onClose, onDelete }) {
           <input id={id} type="email" className="input" value={v.email} onChange={set('email')} aria-invalid={invalid} aria-describedby={describedBy} autoComplete="off" />
         )}
       </Field>
+      <div className="grid grid-cols-2 gap-4">
+        <Field label="Phone" optional error={errors.phone}>
+          {({ id, invalid, describedBy }) => (
+            <input id={id} type="tel" className="input" value={v.phone} onChange={set('phone')} aria-invalid={invalid} aria-describedby={describedBy} maxLength={30} autoComplete="off" />
+          )}
+        </Field>
+        <Field label="Location" optional error={errors.location}>
+          {({ id, invalid, describedBy }) => (
+            <input id={id} className="input" value={v.location} onChange={set('location')} aria-invalid={invalid} aria-describedby={describedBy} maxLength={80} placeholder="e.g. Durban" />
+          )}
+        </Field>
+      </div>
       <div className="grid grid-cols-2 gap-4">
         <Field label="Years of experience" error={errors.years_experience}>
           {({ id, invalid, describedBy }) => (
@@ -130,6 +206,14 @@ function CandidateForm({ initial, levels, onSaved, onClose, onDelete }) {
           <textarea id={id} rows={7} className="input" value={v.resume_summary} onChange={set('resume_summary')} aria-invalid={invalid} aria-describedby={describedBy} />
         )}
       </Field>
+      </fieldset>
+      {readOnly ? (
+        <div className="flex justify-end border-t border-line pt-4">
+          <button type="button" className="btn-secondary" onClick={onClose}>
+            Close
+          </button>
+        </div>
+      ) : (
       <div className="flex items-center gap-2 border-t border-line pt-4">
         {editing && (
           <button type="button" className="btn-danger-ghost -ml-2" onClick={onDelete}>
@@ -146,11 +230,15 @@ function CandidateForm({ initial, levels, onSaved, onClose, onDelete }) {
           </button>
         </div>
       </div>
+      )}
     </form>
   )
 }
 
 export default function Candidates() {
+  const { can } = useAuth()
+  const canEdit = can('hiring:write')
+  const [importOpen, setImportOpen] = useState(false)
   const [rows, setRows] = useState(null)
   const [query, setQuery] = useState('')
   const [sort, setSort] = useState({ key: 'name', dir: 'asc' })
@@ -185,6 +273,7 @@ export default function Candidates() {
           c.full_name.toLowerCase().includes(q) ||
           (c.previous_titles || '').toLowerCase().includes(q) ||
           (c.email || '').toLowerCase().includes(q) ||
+          (c.location || '').toLowerCase().includes(q) ||
           c.skills.some((s) => s.toLowerCase().includes(q) || normaliseSkill(s).includes(qSkill)),
       )
     }
@@ -231,9 +320,16 @@ export default function Candidates() {
         title="Candidates"
         description={rows ? `${total.toLocaleString()} candidate${total === 1 ? '' : 's'} in the database` : 'Loading candidates'}
         actions={
-          <button type="button" className="btn-primary" onClick={() => setEditing({ ...EMPTY })}>
-            <Plus size={16} aria-hidden /> Add candidate
-          </button>
+          canEdit && (
+            <>
+              <button type="button" className="btn-secondary" onClick={() => setImportOpen(true)}>
+                <Upload size={16} aria-hidden /> Import CSV or Excel
+              </button>
+              <button type="button" className="btn-primary" onClick={() => setEditing({ ...EMPTY })}>
+                <Plus size={16} aria-hidden /> Add candidate
+              </button>
+            </>
+          )
         }
       />
 
@@ -245,7 +341,7 @@ export default function Candidates() {
               type="search"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search by name, title or skill"
+              placeholder="Search by name, title, skill or location"
               className="input pl-9 pr-8"
               aria-label="Search candidates"
             />
@@ -291,17 +387,19 @@ export default function Candidates() {
                 icon={Users}
                 title="No candidates yet"
                 action={
-                  <div className="flex gap-2">
-                    <button type="button" className="btn-primary" onClick={() => setEditing({ ...EMPTY })}>
-                      <Plus size={16} aria-hidden /> Add candidate
-                    </button>
-                    <Link to="/admin" className="btn-secondary">
-                      Load demo data
-                    </Link>
-                  </div>
+                  canEdit && (
+                    <div className="flex gap-2">
+                      <button type="button" className="btn-primary" onClick={() => setEditing({ ...EMPTY })}>
+                        <Plus size={16} aria-hidden /> Add candidate
+                      </button>
+                      <button type="button" className="btn-secondary" onClick={() => setImportOpen(true)}>
+                        Import a file
+                      </button>
+                    </div>
+                  )
                 }
               >
-                Add your first candidate, or load the demo data from the Admin screen.
+                Add candidates one at a time, import a CSV or Excel file, or ask an administrator to load the seed data.
               </EmptyState>
             ) : filtered.length === 0 ? (
               <EmptyState icon={Search} title={`Nothing matches “${debounced}”`}>
@@ -323,7 +421,7 @@ export default function Candidates() {
                       >
                         <div className="min-w-0">
                           <p className="truncate text-base font-medium text-ink">{c.full_name}</p>
-                          <p className="truncate text-sm text-faint">{c.email || 'No email'}</p>
+                          <p className="truncate text-sm text-faint">{[c.location, c.email].filter(Boolean).join(' · ') || 'No contact details'}</p>
                         </div>
                         <p className="truncate text-sm text-muted">{c.previous_titles || '–'}</p>
                         <div className="flex min-w-0 items-center gap-2">
@@ -349,9 +447,9 @@ export default function Candidates() {
                             e.stopPropagation()
                             setEditing(c)
                           }}
-                          aria-label={`Edit ${c.full_name}`}
+                          aria-label={`${canEdit ? 'Edit' : 'View'} ${c.full_name}`}
                         >
-                          <Pencil size={14} />
+                          {canEdit ? <Pencil size={14} /> : <Eye size={14} />}
                         </button>
                       </div>
                     )
@@ -366,7 +464,7 @@ export default function Candidates() {
       <SlideOver
         open={editing !== null}
         onClose={() => setEditing(null)}
-        title={editing?.candidate_id ? 'Edit candidate' : 'Add candidate'}
+        title={editing?.candidate_id ? (canEdit ? 'Edit candidate' : 'Candidate profile') : 'Add candidate'}
         subtitle={editing?.candidate_id ? editing.full_name : 'Only skills, experience, education and the summary are scored.'}
       >
         {editing && (
@@ -376,6 +474,8 @@ export default function Candidates() {
               ...EMPTY,
               ...editing,
               email: editing.email || '',
+              phone: editing.phone || '',
+              location: editing.location || '',
               previous_titles: editing.previous_titles || '',
               years_experience: editing.years_experience ?? '',
               level_id: editing.level_id ? String(editing.level_id) : '',
@@ -384,9 +484,12 @@ export default function Candidates() {
             onSaved={onSaved}
             onClose={() => setEditing(null)}
             onDelete={() => setConfirmDelete(editing)}
+            readOnly={!canEdit}
           />
         )}
       </SlideOver>
+
+      <ImportPanel open={importOpen} onClose={() => setImportOpen(false)} onImported={() => load()} />
 
       <ConfirmDialog
         open={Boolean(confirmDelete)}

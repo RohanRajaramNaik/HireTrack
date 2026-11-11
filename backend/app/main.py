@@ -21,7 +21,7 @@ from .config import settings
 from .database import init_db
 from .errors import AppError
 from .logging_setup import setup_logging
-from .routers import admin, candidates, jobs, match
+from .routers import admin, auth, candidates, jobs, match, pipeline, resources
 
 log = logging.getLogger("hiretrack")
 
@@ -34,6 +34,15 @@ FIELD_LABELS = {
     "min_experience": "Minimum experience",
     "level_id": "Education level",
     "min_level_id": "Minimum education",
+    "location": "Location",
+    "role_title": "Role",
+    "allocation_percent": "Allocation",
+    "start_date": "Start date",
+    "end_date": "End date",
+    "name": "Name",
+    "client": "Client",
+    "password": "Password",
+    "email": "Email",
 }
 
 
@@ -54,13 +63,13 @@ async def lifespan(_app: FastAPI):
     yield
 
 
-app = FastAPI(title="HireTrack Matching Engine", version="1.0.0", lifespan=lifespan)
+app = FastAPI(title="HireTrack: Applicant Tracking & Resource Allocation", version="2.0.0", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins,
     allow_methods=["GET", "POST", "PUT", "DELETE"],
-    allow_headers=["Content-Type", "X-Admin-Passcode"],
+    allow_headers=["Content-Type", "Authorization", "X-Confirm-Password"],
 )
 
 
@@ -114,10 +123,13 @@ async def _http_handler(_req: Request, exc: StarletteHTTPException):
 
 
 # ----------------------------------------------------------------- routes
+app.include_router(auth.router)
 app.include_router(candidates.router)
 app.include_router(jobs.router)
 app.include_router(match.router)
 app.include_router(admin.router)
+app.include_router(pipeline.router)
+app.include_router(resources.router)
 
 
 @app.get("/api/health")

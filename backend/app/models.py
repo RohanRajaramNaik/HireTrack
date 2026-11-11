@@ -1,11 +1,13 @@
 """ORM models (3NF). CHECK constraints mirror the validation rules exactly."""
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 
 from sqlalchemy import (
     JSON,
+    Boolean,
     CheckConstraint,
+    Date,
     DateTime,
     Float,
     ForeignKey,
@@ -46,6 +48,8 @@ class Candidate(Base):
     candidate_id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     full_name: Mapped[str] = mapped_column(String(100), nullable=False)
     email: Mapped[str | None] = mapped_column(String(254), nullable=True)
+    phone: Mapped[str | None] = mapped_column(String(30), nullable=True)
+    location: Mapped[str | None] = mapped_column(String(80), nullable=True)
     years_experience: Mapped[float] = mapped_column(Float, nullable=False)
     level_id: Mapped[int] = mapped_column(ForeignKey("education_level.level_id"), nullable=False)
     previous_titles: Mapped[str | None] = mapped_column(String(500), nullable=True)
@@ -84,6 +88,9 @@ class JobSpecification(Base):
     job_id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     job_title: Mapped[str] = mapped_column(String(100), nullable=False)
     created_by: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    location: Mapped[str] = mapped_column(String(80), nullable=False, default="Johannesburg")
+    # open = accepting applicants; closed = filled or withdrawn
+    status: Mapped[str] = mapped_column(String(10), nullable=False, default="open")
     min_experience: Mapped[float] = mapped_column(Float, nullable=False, default=0)
     min_level_id: Mapped[int] = mapped_column(ForeignKey("education_level.level_id"), nullable=False)
     job_description: Mapped[str] = mapped_column(Text, nullable=False)
@@ -100,6 +107,8 @@ class JobSpecification(Base):
 
     __table_args__ = (
         CheckConstraint("length(trim(job_title)) BETWEEN 2 AND 100", name="ck_job_title"),
+        CheckConstraint("length(trim(location)) BETWEEN 2 AND 80", name="ck_job_location"),
+        CheckConstraint("status IN ('open','closed')", name="ck_job_status"),
         CheckConstraint("min_experience BETWEEN 0 AND 50", name="ck_job_min_exp"),
         CheckConstraint("length(job_description) BETWEEN 20 AND 5000", name="ck_job_desc"),
         CheckConstraint("w_skills BETWEEN 0 AND 100", name="ck_w_skills"),
@@ -186,4 +195,158 @@ class MatchRun(Base):
     __table_args__ = (
         UniqueConstraint("job_id", "run_at", name="uq_run_job_time"),
         CheckConstraint("w_skills + w_experience + w_education + w_semantic = 100", name="ck_run_w_total"),
+    )
+
+
+# --------------------------------------------------------------------------
+# Phase 5 additions: user accounts, applicant pipeline, resource allocation
+# --------------------------------------------------------------------------
+ROLES = ("admin", "recruiter", "resource_manager")
+STAGES = ("applied", "screened", "interview", "offer", "hired", "rejected")
+PROJECT_STATUSES = ("planned", "active", "on_hold", "completed")
+
+
+class User(Base):
+    """A person who logs in. The role decides which screens and actions they get."""
+
+    __tablename__ = "app_user"
+    user_id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    full_name: Mapped[str] = mapped_column(String(100), nullable=False)
+    email: Mapped[str] = mapped_column(String(254), unique=True, nullable=False)
+    password_hash: Mapped[str] = mapped_column(String(100), nullable=False)
+    role: Mapped[str] = mapped_column(String(20), nullable=False)
+    is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow, nullable=False)
+    last_login_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+
+    __table_args__ = (
+        CheckConstraint("role IN ('admin','recruiter','resource_manager')", name="ck_user_role"),
+        CheckConstraint("email = lower(trim(email))", name="ck_user_email_lower"),
+    )
+
+
+class Application(Base):
+    """One candidate applying for one job, and where that application stands."""
+
+    __tablename__ = "application"
+    application_id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    candidate_id: Mapped[int] = mapped_column(
+        ForeignKey("candidate.candidate_id", ondelete="CASCADE"), nullable=False
+    )
+    job_id: Mapped[int] = mapped_column(
+        ForeignKey("job_specification.job_id", ondelete="CASCADE"), nullable=False
+    )
+    stage: Mapped[str] = mapped_column(String(12), nullable=False, default="applied")
+    # Overall match score when the candidate was added from a match run.
+    match_score: Mapped[float | None] = mapped_column(Float, nullable=True)
+    applied_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow, nullable=False)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow, nullable=False)
+
+    candidate: Mapped[Candidate] = relationship(lazy="joined")
+    job: Mapped[JobSpecification] = relationship(lazy="joined")
+    events: Mapped[list["ApplicationEvent"]] = relationship(
+        back_populates="application",
+        cascade="all, delete-orphan",
+        passive_deletes=True,
+        order_by="ApplicationEvent.event_id",
+    )
+
+    __table_args__ = (
+        CheckConstraint(
+            "stage IN ('applied','screened','interview','offer','hired','rejected')", name="ck_app_stage"
+        ),
+        CheckConstraint("match_score IS NULL OR match_score BETWEEN 0 AND 100", name="ck_app_score"),
+        UniqueConstraint("candidate_id", "job_id", name="uq_app_cand_job"),
+        Index("ix_application_job_stage", "job_id", "stage"),
+    )
+
+
+class ApplicationEvent(Base):
+    """Audit trail: every stage change, who made it and when. Rows are never edited."""
+
+    __tablename__ = "application_event"
+    event_id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    application_id: Mapped[int] = mapped_column(
+        ForeignKey("application.application_id", ondelete="CASCADE"), nullable=False
+    )
+    from_stage: Mapped[str | None] = mapped_column(String(12), nullable=True)
+    to_stage: Mapped[str] = mapped_column(String(12), nullable=False)
+    changed_by: Mapped[int | None] = mapped_column(
+        ForeignKey("app_user.user_id", ondelete="SET NULL"), nullable=True
+    )
+    changed_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow, nullable=False)
+    note: Mapped[str | None] = mapped_column(String(500), nullable=True)
+
+    application: Mapped[Application] = relationship(back_populates="events")
+    user: Mapped[User | None] = relationship(lazy="joined")
+
+
+class StaffMember(Base):
+    """Someone who can be allocated to projects: existing staff or a hired candidate."""
+
+    __tablename__ = "staff_member"
+    staff_id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    full_name: Mapped[str] = mapped_column(String(100), nullable=False)
+    email: Mapped[str | None] = mapped_column(String(254), nullable=True)
+    role_title: Mapped[str] = mapped_column(String(100), nullable=False)
+    location: Mapped[str | None] = mapped_column(String(80), nullable=True)
+    # Set when the person was hired through the pipeline.
+    candidate_id: Mapped[int | None] = mapped_column(
+        ForeignKey("candidate.candidate_id", ondelete="SET NULL"), nullable=True, unique=True
+    )
+    source: Mapped[str] = mapped_column(String(10), nullable=False, default="existing")
+    is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow, nullable=False)
+
+    allocations: Mapped[list["Allocation"]] = relationship(
+        back_populates="staff", cascade="all, delete-orphan", passive_deletes=True
+    )
+
+    __table_args__ = (
+        CheckConstraint("length(trim(full_name)) BETWEEN 2 AND 100", name="ck_staff_name"),
+        CheckConstraint("source IN ('existing','hired')", name="ck_staff_source"),
+    )
+
+
+class Project(Base):
+    __tablename__ = "project"
+    project_id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    name: Mapped[str] = mapped_column(String(100), nullable=False, unique=True)
+    client: Mapped[str] = mapped_column(String(100), nullable=False)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    start_date: Mapped[date] = mapped_column(Date, nullable=False)
+    end_date: Mapped[date] = mapped_column(Date, nullable=False)
+    status: Mapped[str] = mapped_column(String(10), nullable=False, default="planned")
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow, nullable=False)
+
+    allocations: Mapped[list["Allocation"]] = relationship(
+        back_populates="project", cascade="all, delete-orphan", passive_deletes=True
+    )
+
+    __table_args__ = (
+        CheckConstraint("length(trim(name)) BETWEEN 2 AND 100", name="ck_project_name"),
+        CheckConstraint("end_date >= start_date", name="ck_project_dates"),
+        CheckConstraint("status IN ('planned','active','on_hold','completed')", name="ck_project_status"),
+    )
+
+
+class Allocation(Base):
+    """A share of one staff member's time on one project for a date range."""
+
+    __tablename__ = "allocation"
+    allocation_id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    staff_id: Mapped[int] = mapped_column(ForeignKey("staff_member.staff_id", ondelete="CASCADE"), nullable=False)
+    project_id: Mapped[int] = mapped_column(ForeignKey("project.project_id", ondelete="CASCADE"), nullable=False)
+    role_on_project: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    allocation_percent: Mapped[int] = mapped_column(Integer, nullable=False)
+    start_date: Mapped[date] = mapped_column(Date, nullable=False)
+    end_date: Mapped[date] = mapped_column(Date, nullable=False)
+
+    staff: Mapped[StaffMember] = relationship(back_populates="allocations", lazy="joined")
+    project: Mapped[Project] = relationship(back_populates="allocations", lazy="joined")
+
+    __table_args__ = (
+        CheckConstraint("allocation_percent BETWEEN 1 AND 100", name="ck_alloc_percent"),
+        CheckConstraint("end_date >= start_date", name="ck_alloc_dates"),
+        Index("ix_allocation_staff", "staff_id"),
     )

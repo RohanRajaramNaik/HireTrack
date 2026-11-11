@@ -28,7 +28,7 @@ class Settings:
     log_dir: Path = Path(os.getenv("HIRETRACK_LOG_DIR", PROJECT_ROOT / "logs"))
     model_dir: Path = Path(os.getenv("HIRETRACK_MODEL_DIR", PROJECT_ROOT / "models"))
     frontend_dist: Path = PROJECT_ROOT / "frontend" / "dist"
-    seed_dir: Path = BACKEND_DIR / "seed"
+    seed_dir: Path = PROJECT_ROOT / "seed"
 
     model_name: str = "sentence-transformers/all-MiniLM-L6-v2"
 
@@ -36,7 +36,9 @@ class Settings:
     port: int = int(os.getenv("PORT", "8000"))
     log_level: str = os.getenv("LOG_LEVEL", "INFO")
 
-    admin_passcode_hash: str = os.getenv("ADMIN_PASSCODE_HASH", "")
+    # Secret used to sign login tokens. If empty, a random one is generated on
+    # first run and kept in data/.jwt_secret (see security.jwt_secret).
+    jwt_secret: str = os.getenv("JWT_SECRET", "")
 
     # Disable the semantic model (e.g. in fast unit tests). A deterministic
     # hashing fallback is used instead so the app still works.

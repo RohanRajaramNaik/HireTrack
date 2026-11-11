@@ -1,0 +1,322 @@
+﻿[1/4] Creating the Python virtual environment...
+      Installing Python packages (first run only, a few minutes)...
+Collecting fastapi==0.162.0 (from -r backend\requirements.txt (line 2))
+  Downloading fastapi-0.162.0-py3-none-any.whl.metadata (26 kB)
+Collecting uvicorn==0.54.0 (from uvicorn[standard]==0.54.0->-r backend\requirements.txt (line 3))
+  Downloading uvicorn-0.54.0-py3-none-any.whl.metadata (6.6 kB)
+Collecting pydantic==2.14.3 (from -r backend\requirements.txt (line 4))
+  Downloading pydantic-2.14.3-py3-none-any.whl.metadata (141 kB)
+Collecting sqlalchemy==2.1.8 (from -r backend\requirements.txt (line 5))
+  Downloading sqlalchemy-2.1.8-cp311-cp311-win_amd64.whl.metadata (9.9 kB)
+Collecting python-dotenv==1.2.4 (from -r backend\requirements.txt (line 6))
+  Downloading python_dotenv-1.2.4-py3-none-any.whl.metadata (29 kB)
+Collecting passlib==1.7.4 (from passlib[bcrypt]==1.7.4->-r backend\requirements.txt (line 7))
+  Downloading passlib-1.7.4-py2.py3-none-any.whl.metadata (1.7 kB)
+Collecting pyjwt==2.10.1 (from -r backend\requirements.txt (line 8))
+  Using cached PyJWT-2.10.1-py3-none-any.whl.metadata (4.0 kB)
+Collecting python-multipart==0.0.20 (from -r backend\requirements.txt (line 9))
+  Using cached python_multipart-0.0.20-py3-none-any.whl.metadata (1.8 kB)
+Collecting openpyxl==3.1.5 (from -r backend\requirements.txt (line 10))
+  Using cached openpyxl-3.1.5-py2.py3-none-any.whl.metadata (2.5 kB)
+Collecting pypdf==5.4.0 (from -r backend\requirements.txt (line 11))
+  Using cached pypdf-5.4.0-py3-none-any.whl.metadata (7.3 kB)
+Collecting bcrypt==4.0.1 (from -r backend\requirements.txt (line 12))
+  Downloading bcrypt-4.0.1-cp36-abi3-win_amd64.whl.metadata (9.0 kB)
+Collecting numpy==2.4.6 (from -r backend\requirements.txt (line 13))
+  Downloading numpy-2.4.6-cp311-cp311-win_amd64.whl.metadata (6.6 kB)
+Collecting scikit-learn==1.9.1 (from -r backend\requirements.txt (line 14))
+  Downloading scikit_learn-1.9.1-cp311-cp311-win_amd64.whl.metadata (9.3 kB)
+Collecting sentence-transformers==6.2.0 (from -r backend\requirements.txt (line 15))
+  Downloading sentence_transformers-6.2.0-py3-none-any.whl.metadata (20 kB)
+Collecting transformers==5.22.1 (from -r backend\requirements.txt (line 16))
+  Downloading transformers-5.22.1-py3-none-any.whl.metadata (31 kB)
+Collecting huggingface-hub==2.4.0 (from -r backend\requirements.txt (line 17))
+  Downloading huggingface_hub-2.4.0-py3-none-any.whl.metadata (16 kB)
+Collecting torch==2.15.0 (from -r backend\requirements.txt (line 18))
+  Downloading torch-2.15.0-cp311-cp311-win_amd64.whl.metadata (36 kB)
+Collecting pytest==9.2.0 (from -r backend\requirements.txt (line 19))
+  Downloading pytest-9.2.0-py3-none-any.whl.metadata (7.9 kB)
+Collecting pytest-cov==6.1.1 (from -r backend\requirements.txt (line 20))
+  Using cached pytest_cov-6.1.1-py3-none-any.whl.metadata (28 kB)
+Collecting httpx==0.28.1 (from -r backend\requirements.txt (line 21))
+  Downloading httpx-0.28.1-py3-none-any.whl.metadata (7.1 kB)
+Collecting starlette>=0.46.0 (from fastapi==0.162.0->-r backend\requirements.txt (line 2))
+  Downloading starlette-1.10.0-py3-none-any.whl.metadata (6.6 kB)
+Collecting typing-extensions>=4.8.0 (from fastapi==0.162.0->-r backend\requirements.txt (line 2))
+  Downloading typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)
+Collecting typing-inspection>=0.4.2 (from fastapi==0.162.0->-r backend\requirements.txt (line 2))
+  Downloading typing_inspection-0.4.5-py3-none-any.whl.metadata (2.6 kB)
+Collecting annotated-doc>=0.0.2 (from fastapi==0.162.0->-r backend\requirements.txt (line 2))
+  Downloading annotated_doc-0.0.6-py3-none-any.whl.metadata (6.5 kB)
+Collecting opentelemetry-api>=1.44.0 (from fastapi==0.162.0->-r backend\requirements.txt (line 2))
+  Downloading opentelemetry_api-1.45.2-py3-none-any.whl.metadata (1.4 kB)
+Collecting click>=7.0 (from uvicorn==0.54.0->uvicorn[standard]==0.54.0->-r backend\requirements.txt (line 3))
+  Downloading click-8.5.1-py3-none-any.whl.metadata (2.6 kB)
+Collecting h11>=0.8 (from uvicorn==0.54.0->uvicorn[standard]==0.54.0->-r backend\requirements.txt (line 3))
+  Downloading h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)
+Collecting annotated-types>=0.6.0 (from pydantic==2.14.3->-r backend\requirements.txt (line 4))
+  Downloading annotated_types-0.8.0-py3-none-any.whl.metadata (15 kB)
+Collecting pydantic-core==2.50.4 (from pydantic==2.14.3->-r backend\requirements.txt (line 4))
+  Downloading pydantic_core-2.50.4-cp311-cp311-win_amd64.whl.metadata (6.7 kB)
+Collecting et-xmlfile (from openpyxl==3.1.5->-r backend\requirements.txt (line 10))
+  Using cached et_xmlfile-2.0.0-py3-none-any.whl.metadata (2.7 kB)
+Collecting scipy>=1.10.0 (from scikit-learn==1.9.1->-r backend\requirements.txt (line 14))
+  Downloading scipy-1.17.1-cp311-cp311-win_amd64.whl.metadata (60 kB)
+Collecting joblib>=1.4.0 (from scikit-learn==1.9.1->-r backend\requirements.txt (line 14))
+  Downloading joblib-1.6.0-py3-none-any.whl.metadata (6.5 kB)
+Collecting narwhals>=2.0.1 (from scikit-learn==1.9.1->-r backend\requirements.txt (line 14))
+  Downloading narwhals-2.28.0-py3-none-any.whl.metadata (15 kB)
+Collecting threadpoolctl>=3.5.0 (from scikit-learn==1.9.1->-r backend\requirements.txt (line 14))
+  Downloading threadpoolctl-3.8.0-py3-none-any.whl.metadata (29 kB)
+Collecting tokenizers>=0.19 (from sentence-transformers==6.2.0->-r backend\requirements.txt (line 15))
+  Downloading tokenizers-0.23.3-cp310-abi3-win_amd64.whl.metadata (10 kB)
+Collecting tqdm>=4.0.0 (from sentence-transformers==6.2.0->-r backend\requirements.txt (line 15))
+  Using cached tqdm-4.70.1-py3-none-any.whl.metadata (57 kB)
+Collecting packaging>=20.0 (from transformers==5.22.1->-r backend\requirements.txt (line 16))
+  Downloading packaging-26.3-py3-none-any.whl.metadata (3.5 kB)
+Collecting pyyaml>=5.1 (from transformers==5.22.1->-r backend\requirements.txt (line 16))
+  Downloading pyyaml-6.0.3-cp311-cp311-win_amd64.whl.metadata (2.4 kB)
+Collecting regex>=2025.10.22 (from transformers==5.22.1->-r backend\requirements.txt (line 16))
+  Downloading regex-2026.11.9-cp311-cp311-win_amd64.whl.metadata (41 kB)
+Collecting typer (from transformers==5.22.1->-r backend\requirements.txt (line 16))
+  Downloading typer-0.29.1-py3-none-any.whl.metadata (16 kB)
+Collecting safetensors>=0.8.0 (from transformers==5.22.1->-r backend\requirements.txt (line 16))
+  Downloading safetensors-0.8.0-cp310-abi3-win_amd64.whl.metadata (4.2 kB)
+Collecting filelock>=3.10.0 (from huggingface-hub==2.4.0->-r backend\requirements.txt (line 17))
+  Downloading filelock-4.2.10-py3-none-any.whl.metadata (2.3 kB)
+Collecting fsspec>=2023.5.0 (from huggingface-hub==2.4.0->-r backend\requirements.txt (line 17))
+  Downloading fsspec-2026.9.0-py3-none-any.whl.metadata (10 kB)
+Collecting hf-xet<2.0.0,>=1.6.0 (from huggingface-hub==2.4.0->-r backend\requirements.txt (line 17))
+  Downloading hf_xet-1.8.0-cp38-abi3-win_amd64.whl.metadata (4.9 kB)
+Collecting httpx2<3,>=2.0.0 (from huggingface-hub==2.4.0->-r backend\requirements.txt (line 17))
+  Downloading httpx2-2.16.0-py3-none-any.whl.metadata (10 kB)
+Requirement already satisfied: setuptools>=77.0.3 in .\.venv\Lib\site-packages (from torch==2.15.0->-r backend\requirements.txt (line 18)) (79.0.1)
+Collecting sympy>=1.13.3 (from torch==2.15.0->-r backend\requirements.txt (line 18))
+  Downloading sympy-1.14.0-py3-none-any.whl.metadata (12 kB)
+Collecting networkx>=2.5.1 (from torch==2.15.0->-r backend\requirements.txt (line 18))
+  Downloading networkx-3.6.1-py3-none-any.whl.metadata (6.8 kB)
+Collecting jinja2 (from torch==2.15.0->-r backend\requirements.txt (line 18))
+  Using cached jinja2-3.1.6-py3-none-any.whl.metadata (2.9 kB)
+Collecting colorama>=0.4 (from pytest==9.2.0->-r backend\requirements.txt (line 19))
+  Using cached colorama-0.4.6-py2.py3-none-any.whl.metadata (17 kB)
+Collecting iniconfig>=2 (from pytest==9.2.0->-r backend\requirements.txt (line 19))
+  Downloading iniconfig-2.3.1-py3-none-any.whl.metadata (2.8 kB)
+Collecting pluggy<2,>=1.6 (from pytest==9.2.0->-r backend\requirements.txt (line 19))
+  Downloading pluggy-1.7.0-py3-none-any.whl.metadata (5.0 kB)
+Collecting pygments>=2.15 (from pytest==9.2.0->-r backend\requirements.txt (line 19))
+  Downloading pygments-2.21.0-py3-none-any.whl.metadata (2.5 kB)
+Collecting coverage>=7.5 (from coverage[toml]>=7.5->pytest-cov==6.1.1->-r backend\requirements.txt (line 20))
+  Using cached coverage-7.17.2-cp311-cp311-win_amd64.whl.metadata (8.3 kB)
+Collecting anyio (from httpx==0.28.1->-r backend\requirements.txt (line 21))
+  Downloading anyio-4.16.0-py3-none-any.whl.metadata (4.7 kB)
+Collecting certifi (from httpx==0.28.1->-r backend\requirements.txt (line 21))
+  Downloading certifi-2026.10.23-py3-none-any.whl.metadata (2.5 kB)
+Collecting httpcore==1.* (from httpx==0.28.1->-r backend\requirements.txt (line 21))
+  Downloading httpcore-1.0.9-py3-none-any.whl.metadata (21 kB)
+Collecting idna (from httpx==0.28.1->-r backend\requirements.txt (line 21))
+  Downloading idna-3.20-py3-none-any.whl.metadata (7.2 kB)
+Collecting httptools>=0.8.0 (from uvicorn[standard]==0.54.0->-r backend\requirements.txt (line 3))
+  Downloading httptools-0.9.0-cp311-cp311-win_amd64.whl.metadata (3.7 kB)
+Collecting watchfiles>=0.20 (from uvicorn[standard]==0.54.0->-r backend\requirements.txt (line 3))
+  Downloading watchfiles-1.3.0-cp310-abi3-win_amd64.whl.metadata (5.0 kB)
+Collecting websockets>=13.0 (from uvicorn[standard]==0.54.0->-r backend\requirements.txt (line 3))
+  Downloading websockets-17.4-cp311-cp311-win_amd64.whl.metadata (6.5 kB)
+Collecting httpcore2==2.16.0 (from httpx2<3,>=2.0.0->huggingface-hub==2.4.0->-r backend\requirements.txt (line 17))
+  Downloading httpcore2-2.16.0-py3-none-any.whl.metadata (27 kB)
+Collecting truststore>=0.10 (from httpx2<3,>=2.0.0->huggingface-hub==2.4.0->-r backend\requirements.txt (line 17))
+  Downloading truststore-0.10.5-py3-none-any.whl.metadata (4.5 kB)
+Collecting cloudpickle>=3.0 (from joblib>=1.4.0->scikit-learn==1.9.1->-r backend\requirements.txt (line 14))
+  Downloading cloudpickle-3.1.2-py3-none-any.whl.metadata (7.1 kB)
+Collecting mpmath<1.4,>=1.1.0 (from sympy>=1.13.3->torch==2.15.0->-r backend\requirements.txt (line 18))
+  Using cached mpmath-1.3.0-py3-none-any.whl.metadata (8.6 kB)
+Collecting MarkupSafe>=2.0 (from jinja2->torch==2.15.0->-r backend\requirements.txt (line 18))
+  Downloading markupsafe-3.0.4-cp311-cp311-win_amd64.whl.metadata (2.8 kB)
+Collecting shellingham>=1.3.0 (from typer->transformers==5.22.1->-r backend\requirements.txt (line 16))
+  Downloading shellingham-1.5.4-py2.py3-none-any.whl.metadata (3.5 kB)
+Collecting rich>=13.8.0 (from typer->transformers==5.22.1->-r backend\requirements.txt (line 16))
+  Using cached rich-15.0.0-py3-none-any.whl.metadata (18 kB)
+Collecting markdown-it-py>=2.2.0 (from rich>=13.8.0->typer->transformers==5.22.1->-r backend\requirements.txt (line 16))
+  Downloading markdown_it_py-4.3.0-py3-none-any.whl.metadata (7.9 kB)
+Collecting mdurl~=0.1 (from markdown-it-py>=2.2.0->rich>=13.8.0->typer->transformers==5.22.1->-r backend\requirements.txt (line 16))
+  Using cached mdurl-0.1.2-py3-none-any.whl.metadata (1.6 kB)
+Downloading fastapi-0.162.0-py3-none-any.whl (148 kB)
+Downloading uvicorn-0.54.0-py3-none-any.whl (87 kB)
+Downloading pydantic-2.14.3-py3-none-any.whl (494 kB)
+Downloading sqlalchemy-2.1.8-cp311-cp311-win_amd64.whl (2.4 MB)
+   ---------------------------------------- 2.4/2.4 MB 4.4 MB/s  0:00:00
+Downloading python_dotenv-1.2.4-py3-none-any.whl (23 kB)
+Downloading passlib-1.7.4-py2.py3-none-any.whl (525 kB)
+   ---------------------------------------- 525.6/525.6 kB 8.5 MB/s  0:00:00
+Using cached PyJWT-2.10.1-py3-none-any.whl (22 kB)
+Using cached python_multipart-0.0.20-py3-none-any.whl (24 kB)
+Using cached openpyxl-3.1.5-py2.py3-none-any.whl (250 kB)
+Using cached pypdf-5.4.0-py3-none-any.whl (302 kB)
+Downloading bcrypt-4.0.1-cp36-abi3-win_amd64.whl (152 kB)
+Downloading numpy-2.4.6-cp311-cp311-win_amd64.whl (12.6 MB)
+   ---------------------------------------- 12.6/12.6 MB 5.1 MB/s  0:00:02
+Downloading scikit_learn-1.9.1-cp311-cp311-win_amd64.whl (8.3 MB)
+   ---------------------------------------- 8.3/8.3 MB 6.1 MB/s  0:00:01
+Downloading sentence_transformers-6.2.0-py3-none-any.whl (760 kB)
+   ---------------------------------------- 760.7/760.7 kB 6.4 MB/s  0:00:00
+Downloading transformers-5.22.1-py3-none-any.whl (13.1 MB)
+   ---------------------------------------- 13.1/13.1 MB 6.5 MB/s  0:00:02
+Downloading huggingface_hub-2.4.0-py3-none-any.whl (857 kB)
+   ---------------------------------------- 857.0/857.0 kB 7.6 MB/s  0:00:00
+Downloading torch-2.15.0-cp311-cp311-win_amd64.whl (126.7 MB)
+   ---------------------------------------- 126.7/126.7 MB 5.1 MB/s  0:00:24
+Downloading pytest-9.2.0-py3-none-any.whl (411 kB)
+Using cached pytest_cov-6.1.1-py3-none-any.whl (23 kB)
+Downloading httpx-0.28.1-py3-none-any.whl (73 kB)
+Downloading pydantic_core-2.50.4-cp311-cp311-win_amd64.whl (2.3 MB)
+   ---------------------------------------- 2.3/2.3 MB 5.8 MB/s  0:00:00
+Downloading click-8.5.1-py3-none-any.whl (126 kB)
+Downloading hf_xet-1.8.0-cp38-abi3-win_amd64.whl (3.9 MB)
+   ---------------------------------------- 3.9/3.9 MB 5.8 MB/s  0:00:00
+Downloading httpcore-1.0.9-py3-none-any.whl (78 kB)
+Downloading httpx2-2.16.0-py3-none-any.whl (97 kB)
+Downloading httpcore2-2.16.0-py3-none-any.whl (85 kB)
+Downloading pluggy-1.7.0-py3-none-any.whl (27 kB)
+Downloading tokenizers-0.23.3-cp310-abi3-win_amd64.whl (2.9 MB)
+   ---------------------------------------- 2.9/2.9 MB 5.6 MB/s  0:00:00
+Downloading annotated_doc-0.0.6-py3-none-any.whl (5.3 kB)
+Downloading annotated_types-0.8.0-py3-none-any.whl (13 kB)
+Downloading anyio-4.16.0-py3-none-any.whl (134 kB)
+Using cached colorama-0.4.6-py2.py3-none-any.whl (25 kB)
+Using cached coverage-7.17.2-cp311-cp311-win_amd64.whl (230 kB)
+Downloading filelock-4.2.10-py3-none-any.whl (218 kB)
+Downloading fsspec-2026.9.0-py3-none-any.whl (221 kB)
+Downloading h11-0.16.0-py3-none-any.whl (37 kB)
+Downloading httptools-0.9.0-cp311-cp311-win_amd64.whl (92 kB)
+Downloading idna-3.20-py3-none-any.whl (69 kB)
+Downloading iniconfig-2.3.1-py3-none-any.whl (7.6 kB)
+Downloading joblib-1.6.0-py3-none-any.whl (306 kB)
+Downloading cloudpickle-3.1.2-py3-none-any.whl (22 kB)
+Downloading narwhals-2.28.0-py3-none-any.whl (490 kB)
+Downloading networkx-3.6.1-py3-none-any.whl (2.1 MB)
+   ---------------------------------------- 2.1/2.1 MB 5.8 MB/s  0:00:00
+Downloading opentelemetry_api-1.45.2-py3-none-any.whl (60 kB)
+Downloading packaging-26.3-py3-none-any.whl (129 kB)
+Downloading pygments-2.21.0-py3-none-any.whl (1.3 MB)
+   ---------------------------------------- 1.3/1.3 MB 5.3 MB/s  0:00:00
+Downloading pyyaml-6.0.3-cp311-cp311-win_amd64.whl (158 kB)
+Downloading regex-2026.11.9-cp311-cp311-win_amd64.whl (281 kB)
+Downloading safetensors-0.8.0-cp310-abi3-win_amd64.whl (355 kB)
+Downloading scipy-1.17.1-cp311-cp311-win_amd64.whl (36.6 MB)
+   ---------------------------------------- 36.6/36.6 MB 6.1 MB/s  0:00:05
+Downloading starlette-1.10.0-py3-none-any.whl (80 kB)
+Downloading sympy-1.14.0-py3-none-any.whl (6.3 MB)
+   ---------------------------------------- 6.3/6.3 MB 6.2 MB/s  0:00:01
+Using cached mpmath-1.3.0-py3-none-any.whl (536 kB)
+Downloading threadpoolctl-3.8.0-py3-none-any.whl (32 kB)
+Using cached tqdm-4.70.1-py3-none-any.whl (80 kB)
+Downloading truststore-0.10.5-py3-none-any.whl (19 kB)
+Downloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+Downloading typing_inspection-0.4.5-py3-none-any.whl (14 kB)
+Downloading watchfiles-1.3.0-cp310-abi3-win_amd64.whl (290 kB)
+Downloading websockets-17.4-cp311-cp311-win_amd64.whl (219 kB)
+Downloading certifi-2026.10.23-py3-none-any.whl (135 kB)
+Using cached et_xmlfile-2.0.0-py3-none-any.whl (18 kB)
+Using cached jinja2-3.1.6-py3-none-any.whl (134 kB)
+Downloading markupsafe-3.0.4-cp311-cp311-win_amd64.whl (14 kB)
+Downloading typer-0.29.1-py3-none-any.whl (121 kB)
+Using cached rich-15.0.0-py3-none-any.whl (310 kB)
+Downloading markdown_it_py-4.3.0-py3-none-any.whl (96 kB)
+Using cached mdurl-0.1.2-py3-none-any.whl (10.0 kB)
+Downloading shellingham-1.5.4-py2.py3-none-any.whl (9.8 kB)
+Installing collected packages: passlib, mpmath, websockets, typing-extensions, truststore, threadpoolctl, sympy, shellingham, safetensors, regex, pyyaml, python-multipart, python-dotenv, pypdf, pyjwt, pygments, pluggy, packaging, numpy, networkx, narwhals, mdurl, MarkupSafe, iniconfig, idna, httptools, hf-xet, h11, fsspec, filelock, et-xmlfile, coverage, colorama, cloudpickle, click, certifi, bcrypt, annotated-types, annotated-doc, uvicorn, typing-inspection, tqdm, sqlalchemy, scipy, pytest, pydantic-core, opentelemetry-api, openpyxl, markdown-it-py, joblib, jinja2, httpcore2, httpcore, anyio, watchfiles, torch, starlette, scikit-learn, rich, pytest-cov, pydantic, httpx2, httpx, typer, huggingface-hub, fastapi, tokenizers, transformers, sentence-transformers
+
+Successfully installed MarkupSafe-3.0.4 annotated-doc-0.0.6 annotated-types-0.8.0 anyio-4.16.0 bcrypt-4.0.1 certifi-2026.10.23 click-8.5.1 cloudpickle-3.1.2 colorama-0.4.6 coverage-7.17.2 et-xmlfile-2.0.0 fastapi-0.162.0 filelock-4.2.10 fsspec-2026.9.0 h11-0.16.0 hf-xet-1.8.0 httpcore-1.0.9 httpcore2-2.16.0 httptools-0.9.0 httpx-0.28.1 httpx2-2.16.0 huggingface-hub-2.4.0 idna-3.20 iniconfig-2.3.1 jinja2-3.1.6 joblib-1.6.0 markdown-it-py-4.3.0 mdurl-0.1.2 mpmath-1.3.0 narwhals-2.28.0 networkx-3.6.1 numpy-2.4.6 openpyxl-3.1.5 opentelemetry-api-1.45.2 packaging-26.3 passlib-1.7.4 pluggy-1.7.0 pydantic-2.14.3 pydantic-core-2.50.4 pygments-2.21.0 pyjwt-2.10.1 pypdf-5.4.0 pytest-9.2.0 pytest-cov-6.1.1 python-dotenv-1.2.4 python-multipart-0.0.20 pyyaml-6.0.3 regex-2026.11.9 rich-15.0.0 safetensors-0.8.0 scikit-learn-1.9.1 scipy-1.17.1 sentence-transformers-6.2.0 shellingham-1.5.4 sqlalchemy-2.1.8 starlette-1.10.0 sympy-1.14.0 threadpoolctl-3.8.0 tokenizers-0.23.3 torch-2.15.0 tqdm-4.70.1 transformers-5.22.1 truststore-0.10.5 typer-0.29.1 typing-extensions-4.16.0 typing-inspection-0.4.5 uvicorn-0.54.0 watchfiles-1.3.0 websockets-17.4
+[2/4] Downloading the language model (about 90 MB, first run only)...
+Downloading sentence-transformers/all-MiniLM-L6-v2 (about 90 MB) ...
+cmd : 
+At line:1 char:453
++ ... WSER = "1"; cmd /c "C:\Users\rohan\AppData\Local\Temp\ht-fresh\402311 ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+Fetching 11 files:   0%|          | 0/11 [00:00<?, ?it/s]Warning: You are sending unauthenticated requests to the HF 
+Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+Fetching 11 files:   9%|▉         | 1/11 [00:00<00:03,  3.16it/s]
+Fetching 11 files:  45%|████▌     | 5/11 [00:00<00:00, 14.04it/s]
+Fetching 11 files:  73%|███████▎  | 8/11 [00:00<00:00, 14.22it/s]
+Fetching 11 files:  91%|█████████ | 10/11 [00:20<00:00, 14.22it/s]
+Fetching 11 files: 100%|██████████| 11/11 [00:32<00:00,  4.33s/it]
+Fetching 11 files: 100%|██████████| 11/11 [00:32<00:00,  2.94s/it]
+
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 103/103 [00:00<00:00, 2273.24it/s]
+Saved to C:\Users\rohan\AppData\Local\Temp\ht-fresh\402311822_HireTrack_Phase5_Implementation\source_code\models\all-MiniLM-L6-v2 (embedding size 384). The app can now run offline.
+[3/4] Building the frontend (first run only)...
+npm warn deprecated whatwg-encoding@3.1.1: Use @exodus/bytes instead for a more spec-conformant and faster 
+implementation
+npm warn deprecated glob@10.5.0: Old versions of glob are not supported, and contain widely publicized security 
+vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be 
+purchased (at exorbitant rates) by contacting i@izs.me
+
+added 310 packages in 13s
+
+> hiretrack-frontend@1.0.0 build
+> vite build
+
+vite v5.4.11 building for production...
+transforming...
+✓ 1942 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                                              0.66 kB │ gzip:   0.40 kB
+dist/assets/inter-vietnamese-wght-normal-CBcvBZtf.woff2     10.25 kB
+dist/assets/inter-greek-ext-wght-normal-CGAr0uHJ.woff2      11.20 kB
+dist/assets/inter-cyrillic-wght-normal-CMZtQduZ.woff2       18.74 kB
+dist/assets/inter-greek-wght-normal-CaVNZxsx.woff2          19.07 kB
+dist/assets/inter-cyrillic-ext-wght-normal-B2xhLi22.woff2   25.89 kB
+dist/assets/inter-latin-wght-normal-C2S99t-D.woff2          48.44 kB
+dist/assets/inter-latin-ext-wght-normal-CFHvXkgd.woff2      74.33 kB
+dist/assets/index-DryVUHuK.css                              43.29 kB │ gzip:   8.43 kB
+dist/assets/index-s6ZWG8I-.js                              469.92 kB │ gzip: 143.84 kB
+✓ built in 6.55s
+[4/4] Creating and seeding the database (first run only)...
+INFO hiretrack.seed: Seeded 600 candidates and 33 jobs
+INFO hiretrack.seed: Seeded 847 applications, 1906 events, 73 staff, 12 projects, 102 allocations
+Seeded: 600 candidates, 33 jobs, 847 applications, 1906 events, 73 staff, 12 projects, 102 allocations
+Running the first match (encodes every CV once; about 5-20 s with the real model)...
+
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 103/103 [00:00<00:00, 2312.93it/s]
+INFO hiretrack.embeddings: Loaded sentence-transformers model from C:\Users\rohan\AppData\Local\Temp\ht-fresh\402311822
+_HireTrack_Phase5_Implementation\source_code\models\all-MiniLM-L6-v2
+INFO hiretrack.embeddings: Saved 601 embeddings to disk cache
+INFO hiretrack.match: Match run job id=1 candidates=600 duration_ms=17024
+Matched 600 candidates for 'Cloud Data Engineer' in 17024 ms. Top: Tamryn K. Taylor (91.3)
+Done in 18.3 s
+Sign in at http://127.0.0.1:8000 with admin@hiretrack.local / Admin@123
+
+HireTrack is starting on http://127.0.0.1:8002  (press Ctrl+C to stop)
+Sign in as admin@hiretrack.local / Admin@123  (see INSTALLATION_GUIDE.md for all accounts)
+INFO:     Started server process [41752]
+INFO:     Waiting for application startup.
+INFO hiretrack.backup: Backup created: hiretrack-20261111-120849-723-startup.db (startup)
+INFO hiretrack: HireTrack started on 127.0.0.1:8002
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8002 (Press CTRL+C to quit)
+
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 103/103 [00:00<00:00, 2908.77it/s]
+INFO hiretrack.embeddings: Loaded sentence-transformers model from C:\Users\rohan\AppData\Local\Temp\ht-fresh\402311822
+_HireTrack_Phase5_Implementation\source_code\models\all-MiniLM-L6-v2
+INFO hiretrack.embeddings: Loaded 601 cached embeddings from disk
+INFO hiretrack.seed: Embedding cache warm: 600 texts in 9.2s
+INFO:     127.0.0.1:63149 - "GET /api/health HTTP/1.1" 200 OK
+INFO hiretrack.users: User id=1 signed in
+INFO:     127.0.0.1:52272 - "POST /api/auth/login HTTP/1.1" 200 OK
+INFO hiretrack.users: User id=2 signed in
+INFO:     127.0.0.1:52273 - "POST /api/auth/login HTTP/1.1" 200 OK
+INFO hiretrack.users: User id=3 signed in
+INFO:     127.0.0.1:52274 - "POST /api/auth/login HTTP/1.1" 200 OK
+INFO hiretrack.users: User id=2 signed in
+INFO:     127.0.0.1:52275 - "POST /api/auth/login HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52276 - "GET /api/jobs HTTP/1.1" 200 OK
+INFO hiretrack.match: Match run job id=1 candidates=600 duration_ms=92
+INFO:     127.0.0.1:52277 - "POST /api/jobs/1/match HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52278 - "GET /api/dashboard HTTP/1.1" 200 OK

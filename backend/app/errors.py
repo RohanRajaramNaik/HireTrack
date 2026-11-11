@@ -19,3 +19,11 @@ class NotFound(AppError):
 
 class Unauthorized(AppError):
     status_code = 401
+
+
+class Forbidden(AppError):
+    status_code = 403
+
+
+class Conflict(AppError):
+    status_code = 409
